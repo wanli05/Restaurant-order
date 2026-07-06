@@ -1,0 +1,309 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="app-version" content="1.0.0" />
+    <title>员工登录</title>
+    <link rel="stylesheet" href="/css/staff-settings.css" />
+    <style>
+      :root {
+        --bg: #f3f5f7;
+        --card: #ffffff;
+        --line: #e5e7eb;
+        --text: #111827;
+        --muted: #6b7280;
+        --primary: #2563eb;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        padding: 16px;
+        background: var(--bg);
+        color: var(--text);
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans JP", "Noto Sans SC", Arial, sans-serif;
+      }
+      .lang-bar {
+        width: min(420px, 100%);
+        margin: 0 0 10px 0;
+        display: inline-flex;
+        gap: 8px;
+        padding: 4px;
+        background: #eceff3;
+        border-radius: 12px;
+      }
+      .lang-bar button {
+        margin: 0;
+        width: auto;
+        min-height: 36px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 6px 12px;
+        background: #fff;
+        color: var(--text);
+        font: inherit;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      .wrap {
+        width: min(420px, 100%);
+      }
+      .wrap .admin-header-row {
+        width: 100%;
+      }
+      .card {
+        width: min(420px, 100%);
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 16px;
+      }
+      h1 {
+        margin: 0 0 12px 0;
+        font-size: 28px;
+      }
+      .hint {
+        color: var(--muted);
+        margin: 0 0 12px 0;
+        font-size: 14px;
+      }
+      label {
+        display: block;
+        margin: 8px 0 6px;
+        font-weight: 600;
+      }
+      input {
+        width: 100%;
+        min-height: 40px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 8px 10px;
+      }
+      #loginBtn {
+        width: 100%;
+        min-height: 42px;
+        margin-top: 12px;
+        border: 0;
+        border-radius: 10px;
+        background: var(--primary);
+        color: #fff;
+        font-weight: 700;
+        cursor: pointer;
+      }
+      #error {
+        margin-top: 8px;
+        min-height: 20px;
+        color: #dc2626;
+        font-size: 14px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="admin-header-row">
+        <div class="lang-bar" style="width: auto; margin: 0">
+          <button type="button" onclick="setLang('ja')">日本語</button>
+          <button type="button" onclick="setLang('zh')">中文</button>
+        </div>
+        <div class="admin-settings-wrap">
+          <button
+            type="button"
+            id="adminSettingsTrigger"
+            class="admin-settings-trigger"
+            aria-expanded="false"
+            aria-haspopup="true"
+            aria-controls="adminSettingsMenu"
+            title=""
+          >
+            ⚙
+          </button>
+          <div id="adminSettingsMenu" class="admin-settings-menu" role="menu" aria-labelledby="adminSettingsTrigger">
+            <button type="button" role="menuitem" id="adminSettingsMenuTotpBtn"></button>
+            <button type="button" role="menuitem" id="adminSettingsMenuTokenBtn"></button>
+            <button type="button" role="menuitem" id="adminSettingsMenuAboutBtn"></button>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <h1 id="title"></h1>
+        <p id="hint" class="hint"></p>
+        <label id="usernameLabel" for="username"></label>
+        <input id="username" autocomplete="username" />
+        <label id="passwordLabel" for="password"></label>
+        <input id="password" type="password" autocomplete="current-password" />
+        <button id="loginBtn" type="button"></button>
+        <div id="error"></div>
+      </div>
+    </div>
+
+    <div id="adminTokenHelpModal" class="modal">
+      <div class="modal-content admin-settings-modal-card">
+        <div class="edit-order-head">
+          <h3 id="adminTokenHelpTitle"></h3>
+          <button type="button" id="adminTokenHelpCloseBtn" aria-label="Close">×</button>
+        </div>
+        <p id="adminTokenHelpBody" class="edit-order-sub" style="white-space: pre-line; margin-bottom: 14px"></p>
+        <div class="manager-totp-enroll-actions">
+          <button type="button" id="adminTokenHelpReloginBtn" class="manager-paid-edit-btn manager-paid-edit-btn--primary"></button>
+        </div>
+      </div>
+    </div>
+    <div id="adminAboutModal" class="modal">
+      <div class="modal-content admin-settings-modal-card">
+        <div class="edit-order-head">
+          <h3 id="adminAboutTitle"></h3>
+          <button type="button" id="adminAboutCloseBtn" aria-label="Close">×</button>
+        </div>
+        <p id="adminAboutVersion" class="admin-about-version"></p>
+        <p id="adminAboutBody" class="admin-about-body"></p>
+        <div class="manager-totp-enroll-actions">
+          <button type="button" id="adminAboutOkBtn" class="manager-paid-edit-btn manager-paid-edit-btn--primary"></button>
+        </div>
+      </div>
+    </div>
+    <div id="adminTotpRotateModal" class="modal">
+      <div class="modal-content admin-settings-modal-card">
+        <div class="edit-order-head">
+          <h3 id="adminTotpRotateTitle"></h3>
+          <button type="button" id="adminTotpRotateCloseBtn" aria-label="Close">×</button>
+        </div>
+        <p id="adminTotpRotateHint" class="edit-order-sub" style="margin-bottom: 10px"></p>
+        <label style="display: flex; flex-direction: column; gap: 6px">
+          <span id="adminTotpRotateLabel" style="font-size: 13px; font-weight: 500; color: #334155"></span>
+          <input
+            id="adminTotpRotateInput"
+            class="manager-paid-edit-reason-input"
+            type="text"
+            inputmode="numeric"
+            maxlength="8"
+            autocomplete="one-time-code"
+          />
+        </label>
+        <div class="manager-totp-enroll-actions">
+          <button type="button" id="adminTotpRotateCancelBtn" class="manager-paid-edit-btn"></button>
+          <button type="button" id="adminTotpRotateNextBtn" class="manager-paid-edit-btn manager-paid-edit-btn--primary"></button>
+        </div>
+      </div>
+    </div>
+    <div id="managerTotpEnrollModal" class="modal">
+      <div class="modal-content manager-totp-enroll-modal-card">
+        <div class="edit-order-head">
+          <h3 id="managerTotpEnrollModalTitle"></h3>
+          <button type="button" id="managerTotpEnrollModalCloseBtn">×</button>
+        </div>
+        <p id="managerTotpEnrollModalIntro" class="edit-order-sub"></p>
+        <div class="manager-totp-enroll-panel-inner">
+          <img id="managerTotpQrImg" alt="" width="220" height="220" style="display: block; margin: 0 auto; image-rendering: pixelated" />
+          <p id="managerTotpSecretCaption" style="margin: 12px 0 4px; font-size: 13px; color: #64748b"></p>
+          <code id="managerTotpSecretText" style="display: block; word-break: break-all; font-size: 13px; margin-bottom: 12px"></code>
+          <label style="display: flex; flex-direction: column; gap: 6px">
+            <span id="managerTotpConfirmLabel" style="font-size: 13px; font-weight: 500; color: #334155"></span>
+            <input
+              id="managerTotpConfirmInput"
+              class="manager-paid-edit-reason-input"
+              type="text"
+              inputmode="numeric"
+              maxlength="8"
+              autocomplete="one-time-code"
+            />
+          </label>
+          <div class="manager-totp-enroll-actions">
+            <button type="button" id="managerTotpCancelBtn" class="manager-paid-edit-btn"></button>
+            <button type="button" id="managerTotpConfirmBtn" class="manager-paid-edit-btn manager-paid-edit-btn--primary"></button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="/js/shared/staff-auth.js"></script>
+    <script src="/js/shared/staff-settings-ui.js"></script>
+    <script>
+      const { STAFF_TOKEN_KEY, STAFF_LANG_KEY } = window.StaffAuth;
+      const params = new URLSearchParams(window.location.search);
+      const redirect = params.get("redirect") || "/finance.html";
+      let currentLang = localStorage.getItem(STAFF_LANG_KEY) || "ja";
+      const text = {
+        ja: {
+          title: "スタッフログイン",
+          hint: "ログイン後、管理・厨房・財務ページへアクセスできます。",
+          usernameLabel: "アカウント",
+          passwordLabel: "パスワード",
+          loginBtn: "ログイン",
+          errEmpty: "アカウントとパスワードを入力してください",
+          errCredential: "アカウントまたはパスワードが違います",
+          errNetwork: "ログインに失敗しました。時間をおいて再試行してください",
+        },
+        zh: {
+          title: "员工登录",
+          hint: "登录后可访问订单管理、厨房与财务页面。",
+          usernameLabel: "账号",
+          passwordLabel: "密码",
+          loginBtn: "登录",
+          errEmpty: "请输入账号和密码",
+          errCredential: "账号或密码错误",
+          errNetwork: "登录失败，请稍后重试",
+        },
+      };
+      function t(key) {
+        return text[currentLang][key];
+      }
+      function renderText() {
+        document.documentElement.lang = currentLang === "ja" ? "ja" : "zh";
+        window.StaffAuth?.setLang(currentLang);
+        window.StaffSettingsUi?.renderLabels();
+        document.getElementById("title").innerText = t("title");
+        document.getElementById("hint").innerText = t("hint");
+        document.getElementById("usernameLabel").innerText = t("usernameLabel");
+        document.getElementById("passwordLabel").innerText = t("passwordLabel");
+        document.getElementById("loginBtn").innerText = t("loginBtn");
+      }
+      function setLang(lang) {
+        currentLang = lang;
+        localStorage.setItem(STAFF_LANG_KEY, lang);
+        renderText();
+      }
+
+      async function login() {
+        const username = document.getElementById("username").value.trim();
+        const password = document.getElementById("password").value;
+        const error = document.getElementById("error");
+        error.textContent = "";
+        if (!username || !password) {
+          error.textContent = t("errEmpty");
+          return;
+        }
+        const res = await fetch("/auth/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username, password }),
+        });
+        if (!res.ok) {
+          error.textContent = t("errCredential");
+          return;
+        }
+        const data = await res.json();
+        localStorage.setItem(STAFF_TOKEN_KEY, data.token);
+        window.location.href = redirect;
+      }
+
+      document.getElementById("loginBtn").addEventListener("click", () => {
+        login().catch(() => {
+          document.getElementById("error").textContent = t("errNetwork");
+        });
+      });
+
+      document.getElementById("password").addEventListener("keydown", (event) => {
+        if (event.key === "Enter") {
+          login().catch(() => {
+            document.getElementById("error").textContent = t("errNetwork");
+          });
+        }
+      });
+      renderText();
+      window.StaffSettingsUi?.setup();
+    </script>
+  </body>
+</html>

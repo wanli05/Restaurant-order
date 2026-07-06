@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>点餐系统 · 店员功能测试清单</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        font-family: "Microsoft YaHei", "PingFang SC", "Noto Sans SC", sans-serif;
+        line-height: 1.55;
+        color: #111;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 24px 20px 48px;
+        font-size: 14px;
+      }
+      h1 {
+        font-size: 22px;
+        text-align: center;
+        margin: 0 0 8px;
+        font-weight: 700;
+      }
+      .subtitle {
+        text-align: center;
+        color: #444;
+        margin-bottom: 24px;
+        font-size: 13px;
+      }
+      h2 {
+        font-size: 16px;
+        margin: 28px 0 12px;
+        padding-bottom: 6px;
+        border-bottom: 2px solid #2563eb;
+        font-weight: 700;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 12px 0 20px;
+      }
+      th,
+      td {
+        border: 1px solid #cbd5e1;
+        padding: 10px 12px;
+        vertical-align: top;
+      }
+      th {
+        background: #f1f5f9;
+        font-weight: 600;
+        width: 12%;
+      }
+      td:first-child {
+        width: 12%;
+        text-align: center;
+        font-weight: 600;
+      }
+      .prep {
+        background: #f8fafc;
+        padding: 14px 16px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+      }
+      .prep ul {
+        margin: 8px 0 0;
+        padding-left: 22px;
+      }
+      .footer-form {
+        margin-top: 36px;
+        padding: 16px;
+        border: 1px dashed #94a3b8;
+        border-radius: 8px;
+      }
+      .footer-form p {
+        margin: 10px 0;
+      }
+      .hint {
+        font-size: 12px;
+        color: #64748b;
+        margin-top: 24px;
+      }
+      @media print {
+        body {
+          padding: 12px;
+          font-size: 12px;
+        }
+        h1 {
+          font-size: 18px;
+        }
+        h2 {
+          page-break-after: avoid;
+          margin-top: 18px;
+        }
+        table {
+          page-break-inside: avoid;
+        }
+        .no-print {
+          display: none !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <h1>点餐系统 · 店员功能测试清单</h1>
+    <p class="subtitle">
+      适用于店员上岗前验收 · 无需 IT 背景 · 按表格逐项操作并在店内记录结果
+    </p>
+
+    <p class="no-print hint">
+      <strong>生成 PDF：</strong>使用浏览器菜单「打印」→ 目标打印机选择「另存为 PDF」或「Microsoft Print to
+      PDF」，纸张建议 A4，边距默认即可。（本页也可在店内服务器打开：<code>/staff-test-checklist.html</code>）
+    </p>
+
+    <div class="prep">
+      <strong>测试前准备</strong>
+      <ul>
+        <li>连接店内 Wi-Fi，准备后台网址（通常以 <strong>admin.html</strong> 结尾）与顾客点菜网址。</li>
+        <li>备好店员登录所需<strong>令牌或账号密码</strong>（以店内规定为准）。</li>
+        <li>若启用店长二次验证，备好手机上的<strong>Authenticator 动态码</strong>。</li>
+        <li>建议使用<strong>无痕窗口</strong>或清空本站缓存后再测，避免看到旧页面。</li>
+      </ul>
+    </div>
+
+    <h2>一、后台登录与界面语言</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>序号</th>
+          <th>操作说明</th>
+          <th>预期结果</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1</td>
+          <td>打开后台登录页，按店内流程输入令牌或账号密码并登录。</td>
+          <td>能进入后台主界面，不出现长时间空白或反复退回登录页。</td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td>切换界面语言（中文 / 日文 / 英文）。</td>
+          <td>主要按钮与列表文字随之切换，版面无明显错乱。</td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td>关闭浏览器标签或刷新后，再次登录。</td>
+          <td>仍可正常登录并使用。</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>二、营业开关（必测）</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>序号</th>
+          <th>操作说明</th>
+          <th>预期结果</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>4</td>
+          <td>在后台将门店设为<strong>歇业</strong>后，用顾客页尝试选菜加减。</td>
+          <td>顾客端应有明确提示，且<strong>不能</strong>正常完成点菜（与店内培训一致）。</td>
+        </tr>
+        <tr>
+          <td>5</td>
+          <td>将门店设为<strong>营业</strong>后，再用顾客页选菜。</td>
+          <td>顾客端<strong>可以</strong>正常加减数量并下单。</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>三、顾客点菜页（模拟一桌）</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>序号</th>
+          <th>操作说明</th>
+          <th>预期结果</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>6</td>
+          <td>打开顾客页，按店内规则填写<strong>桌号、用餐人数</strong>等进店信息。</td>
+          <td>能进入菜单；桌号与人数显示正确。</td>
+        </tr>
+        <tr>
+          <td>7</td>
+          <td>依次点开各个<strong>菜品分类</strong>（前菜、面类、饮料、酒水等）。</td>
+          <td>分类名称与纸质菜单一致，切换顺畅。</td>
+        </tr>
+        <tr>
+          <td>8</td>
+          <td>打开<strong>饮料・汽水</strong>与<strong>酒水</strong>；酒水内查看小标题分组。</td>
+          <td>酒水下方有分组标题（嗨棒、烧酒等），不乱成一团。</td>
+        </tr>
+        <tr>
+          <td>9</td>
+          <td>任选数道菜，点击<strong>加号、减号</strong>调整数量。</td>
+          <td>数量与金额变化正确。</td>
+        </tr>
+        <tr>
+          <td>10</td>
+          <td>刷新页面或关闭后再从同一桌入口进入（按店内规定）。</td>
+          <td>购物车是否保留符合店内说明。</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>四、后台桌况与结账</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>序号</th>
+          <th>操作说明</th>
+          <th>预期结果</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>11</td>
+          <td>在后台查看刚测试桌号的<strong>订单或待收金额</strong>。</td>
+          <td>与顾客端所点菜品、金额一致。</td>
+        </tr>
+        <tr>
+          <td>12</td>
+          <td>在顾客端发起<strong>结账请求</strong>（若有该按钮）。</td>
+          <td>后台有明显提示或列表变化，店员能注意到。</td>
+        </tr>
+        <tr>
+          <td>13</td>
+          <td>按店内流程完成<strong>收款与结账</strong>。</td>
+          <td>订单进入已结账或归档等正确状态。</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>五、店员追加点单（若使用）</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>序号</th>
+          <th>操作说明</th>
+          <th>预期结果</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>14</td>
+          <td>选定一桌，使用<strong>追加点单 / 员工代点</strong>功能加菜并提交。</td>
+          <td>该桌订单增加对应菜品。</td>
+        </tr>
+        <tr>
+          <td>15</td>
+          <td>在后台或顾客页核对明细。</td>
+          <td>新增菜品与价格正确。</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>六、厨房屏（若使用）</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>序号</th>
+          <th>操作说明</th>
+          <th>预期结果</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>16</td>
+          <td>下单后打开厨房用网页。</td>
+          <td>能看到新订单或状态更新。</td>
+        </tr>
+        <tr>
+          <td>17</td>
+          <td>按流程标记出餐或完成（若有）。</td>
+          <td>各终端显示与店内规定一致。</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>七、历史订单与高风险操作（若权限允许）</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>序号</th>
+          <th>操作说明</th>
+          <th>预期结果</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>18</td>
+          <td>打开<strong>历史订单</strong>，查找测试订单。</td>
+          <td>能查到对应记录。</td>
+        </tr>
+        <tr>
+          <td>19</td>
+          <td>尝试修改或删除<strong>已结账</strong>订单（若店内有此流程）。</td>
+          <td>系统要求<strong>店长动态口令</strong>时，输入正确才可继续；错误时有清晰提示且不会被退出登录。</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>八、简单异常场景</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>序号</th>
+          <th>操作说明</th>
+          <th>预期结果</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>20</td>
+          <td>暂时关闭 Wi-Fi 后再打开网页操作。</td>
+          <td>出现无法加载或提示；恢复网络后刷新一般可继续使用。</td>
+        </tr>
+        <tr>
+          <td>21</td>
+          <td>两台设备同一桌号分别点菜（若店里允许）。</td>
+          <td>行为符合店内规定（合并或提示冲突等）。</td>
+        </tr>
+        <tr>
+          <td>22</td>
+          <td>测试结束后按财务要求处理<strong>测试订单</strong>。</td>
+          <td>不影响真实营业额与对账。</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="footer-form">
+      <strong>测试记录（店员填写）</strong>
+      <p>测试日期：________________　　测试人：________________</p>
+      <p>使用设备（手机型号 / 浏览器）：________________________________</p>
+      <p>发现问题简述：________________________________________________</p>
+      <p>结论：□ 建议上岗　　□ 需整改后复测</p>
+    </div>
+
+    <p class="hint">
+      说明：界面按钮名称以实际上线版本为准；可将后台与顾客页网址抄在本页背面便于对照。
+    </p>
+  </body>
+</html>

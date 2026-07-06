@@ -1,0 +1,621 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="app-version" content="1.0.0" />
+    <title>Finance System</title>
+    <link rel="stylesheet" href="/css/staff-settings.css" />
+    <style>
+      :root {
+        --bg: #f3f5f7;
+        --card: #ffffff;
+        --line: #e5e7eb;
+        --text: #111827;
+        --muted: #6b7280;
+        --ok: #16a34a;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        padding: 14px;
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans JP",
+          "Noto Sans SC", Arial, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+      }
+
+      .lang-bar {
+        margin-bottom: 10px;
+        display: inline-flex;
+        gap: 8px;
+        padding: 4px;
+        background: #eceff3;
+        border-radius: 12px;
+      }
+
+      .lang-bar button {
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background: #fff;
+        padding: 6px 10px;
+        min-height: 36px;
+        font: inherit;
+        cursor: pointer;
+      }
+      .top-nav {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 8px;
+        margin: 0 0 10px;
+      }
+      .top-nav button {
+        min-height: 38px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background: #fff;
+        font: inherit;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      .business-status-top {
+        margin: 0 0 10px;
+        padding: 10px 12px;
+        border-radius: 10px;
+        border: 1px solid #fecaca;
+        background: #fff1f2;
+        color: #b91c1c;
+        font-weight: 700;
+      }
+      .business-status-top.open {
+        border-color: #86efac;
+        background: #f0fdf4;
+        color: #166534;
+      }
+
+      .card {
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 14px;
+      }
+
+      h2 {
+        margin: 0 0 12px 0;
+      }
+
+      .metric-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 0;
+        border-bottom: 1px solid #eef2f7;
+      }
+
+      .metric-row:last-of-type {
+        border-bottom: none;
+      }
+
+      .metric-label {
+        font-weight: 600;
+        flex: 0 0 220px;
+        white-space: nowrap;
+        text-align: left;
+      }
+
+      .metric-value,
+      .metric-input {
+        margin-left: auto;
+        text-align: right;
+        min-width: 180px;
+      }
+
+      .stat-value {
+        font-weight: 700;
+      }
+
+      input[type="number"] {
+        width: min(300px, 100%);
+        min-height: 40px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 8px 10px;
+      }
+      /*—柜台总现金输入框不需要上下微调箭头 */
+      #actual-cash {
+        appearance: textfield;
+        -moz-appearance: textfield;
+      }
+      #actual-cash::-webkit-outer-spin-button,
+      #actual-cash::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+
+      .metric-input {
+        font-weight: 600;
+      }
+
+      .section-divider {
+        margin: 12px 0;
+      }
+
+      .btn-close {
+        width: 100%;
+        margin-top: 12px;
+        min-height: 42px;
+        border: 0;
+        border-radius: 10px;
+        background: #2563eb;
+        color: #fff;
+        font-weight: 600;
+        cursor: pointer;
+      }
+
+      .btn-close:disabled {
+        opacity: 1;
+      }
+      .ops-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin: 10px 0 2px;
+      }
+      .export-row {
+        margin: 12px 0 0;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 150px;
+        gap: 8px;
+      }
+      .export-row input[type="date"] {
+        min-height: 40px;
+      }
+      .btn-secondary {
+        min-height: 42px;
+        border-radius: 10px;
+        border: 1px solid #cbd5e1;
+        background: #fff;
+        color: #0f172a;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      button:disabled {
+        background: #e5e7eb;
+        border-color: #cbd5e1;
+        color: #9ca3af;
+        cursor: not-allowed;
+        box-shadow: none;
+      }
+      .open-status {
+        margin: 0 0 8px;
+        font-size: 14px;
+        color: #475569;
+      }
+
+      button:focus-visible,
+      input:focus-visible {
+        outline: 2px solid #2563eb;
+        outline-offset: 1px;
+      }
+
+      #bank-deposit {
+        color: var(--ok) !important;
+      }
+
+      #diff-report {
+        font-size: 0.9em;
+        margin-top: 6px;
+        min-height: 20px;
+        text-align: right;
+      }
+
+      .ui-alert-modal {
+        position: fixed;
+        inset: 0;
+        background: rgba(15, 23, 42, 0.42);
+        backdrop-filter: blur(2px);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 18px;
+        z-index: 1200;
+      }
+
+      .ui-alert-modal.show {
+        display: flex;
+      }
+
+      .ui-alert-card {
+        width: min(520px, 100%);
+        background: #fff;
+        border: 1px solid #dbe2ea;
+        border-radius: 16px;
+        padding: 22px;
+        max-height: 78vh;
+        overflow: auto;
+        box-shadow: 0 14px 34px rgba(2, 6, 23, 0.26);
+      }
+
+      .ui-alert-message {
+        margin: 0 0 18px 0;
+        color: #0f172a;
+        line-height: 1.7;
+        font-size: 16px;
+        letter-spacing: 0.01em;
+      }
+      .ui-alert-line {
+        display: block;
+        margin: 0 0 8px 0;
+        padding: 10px 12px;
+        border-radius: 10px;
+        border: 1px solid #e5e7eb;
+        background: #f8fafc;
+      }
+      .ui-alert-line:last-child {
+        margin-bottom: 0;
+      }
+      .ui-alert-line.heading {
+        background: #eff6ff;
+        border-color: #bfdbfe;
+        font-weight: 700;
+      }
+      .ui-alert-line.note {
+        background: #fefce8;
+        border-color: #fde68a;
+      }
+      .ui-alert-line.kv {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+      }
+      .ui-alert-kv-label {
+        min-width: 0;
+      }
+      .ui-alert-kv-value {
+        margin-left: auto;
+        text-align: right;
+        font-variant-numeric: tabular-nums;
+        font-weight: 700;
+        white-space: nowrap;
+      }
+      .ui-alert-gap {
+        height: 8px;
+      }
+
+      .ui-alert-actions {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 10px;
+        margin-top: 4px;
+      }
+      .ui-alert-actions button {
+        min-width: 86px;
+        min-height: 42px;
+        border-radius: 10px;
+        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        line-height: 1;
+      }
+      #uiAlertOkBtn {
+        background: #2563eb;
+        border-color: #1d4ed8;
+        color: #fff;
+      }
+      #uiAlertOkBtn:hover {
+        background: #1d4ed8;
+      }
+
+      .ui-alert-cancel {
+        display: none;
+      }
+
+      .ui-alert-cancel.show {
+        display: inline-flex;
+      }
+
+      @media (min-width: 768px) {
+        body {
+          max-width: 860px;
+          margin: 0 auto;
+          padding: 18px;
+        }
+
+        .card {
+          padding: 18px;
+        }
+      }
+
+      @media (max-width: 767px) {
+        .card {
+          padding: 12px;
+        }
+
+        .metric-row {
+          gap: 8px;
+        }
+
+        .metric-label {
+          flex-basis: 188px;
+        }
+
+        .metric-value,
+        .metric-input {
+          min-width: 0;
+          width: min(260px, 100%);
+        }
+
+        .btn-close {
+          margin-top: 14px;
+        }
+        .export-row {
+          grid-template-columns: 1fr;
+        }
+        .ui-alert-card {
+          padding: 18px;
+          border-radius: 14px;
+        }
+        .ui-alert-message {
+          font-size: 17px;
+          line-height: 1.8;
+        }
+      }
+
+      @media (min-width: 1024px) {
+        body {
+          max-width: 960px;
+          padding: 22px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="admin-header-row">
+      <div class="lang-bar">
+        <button type="button" onclick="setLang('ja')">日本語</button>
+        <button type="button" onclick="setLang('zh')">中文</button>
+      </div>
+      <div class="admin-settings-wrap">
+        <button
+          type="button"
+          id="adminSettingsTrigger"
+          class="admin-settings-trigger"
+          aria-expanded="false"
+          aria-haspopup="true"
+          aria-controls="adminSettingsMenu"
+          title=""
+        >
+          ⚙
+        </button>
+        <div id="adminSettingsMenu" class="admin-settings-menu" role="menu" aria-labelledby="adminSettingsTrigger">
+          <button type="button" role="menuitem" id="adminSettingsMenuTotpBtn"></button>
+          <button type="button" role="menuitem" id="adminSettingsMenuTokenBtn"></button>
+          <button type="button" role="menuitem" id="adminSettingsMenuAboutBtn"></button>
+        </div>
+      </div>
+    </div>
+    <div class="top-nav">
+      <button
+        id="navAdminBtn"
+        type="button"
+        onclick="openModule('/admin.html')"
+      ></button>
+      <button
+        id="navKitchenBtn"
+        type="button"
+        onclick="openModule('/kitchen.html')"
+      ></button>
+      <button
+        id="navFinanceBtn"
+        type="button"
+        onclick="openModule('/finance.html')"
+      ></button>
+      <button
+        id="navRecoveryBtn"
+        type="button"
+        onclick="openModule('/recovery.html')"
+      ></button>
+    </div>
+    <div id="openStatusTop" class="business-status-top"></div>
+    <div class="card">
+      <h2 id="title"></h2>
+
+      <div class="metric-row">
+        <span id="labelRevenue" class="metric-label"></span>
+        <span id="total-revenue" class="stat-value metric-value">¥0</span>
+      </div>
+      <div class="metric-row">
+        <span id="labelCustomerCount" class="metric-label"></span>
+        <span id="customer-count" class="stat-value metric-value">0</span>
+      </div>
+      <div class="metric-row">
+        <span id="labelAvgTicket" class="metric-label"></span>
+        <span id="avg-ticket" class="stat-value metric-value">¥0</span>
+      </div>
+      <div class="metric-row">
+        <span id="labelCashRevenue" class="metric-label"></span>
+        <span id="cash-revenue" class="stat-value metric-value">¥0</span>
+      </div>
+      <div class="metric-row">
+        <span id="labelPaypayRevenue" class="metric-label"></span>
+        <span id="paypay-revenue" class="stat-value metric-value">¥0</span>
+      </div>
+      <div class="metric-row">
+        <span id="labelWechatRevenue" class="metric-label"></span>
+        <span id="wechat-revenue" class="stat-value metric-value">¥0</span>
+      </div>
+
+      <div class="metric-row">
+        <span id="labelExpense" class="metric-label"></span>
+        <input
+          type="number"
+          id="expenses"
+          class="metric-input"
+          value="0"
+          oninput="calculateBankDeposit()"
+        />
+      </div>
+
+      <div class="metric-row">
+        <span id="labelFloat" class="metric-label"></span>
+        <input
+          type="number"
+          id="float-cash"
+          class="metric-input"
+          value="80000"
+          oninput="calculateBankDeposit()"
+        />
+      </div>
+
+      <div class="metric-row">
+        <span id="labelDeposit" class="metric-label"></span>
+        <span id="bank-deposit" class="stat-value metric-value">¥0</span>
+      </div>
+
+      <hr class="section-divider" />
+
+      <div class="metric-row">
+        <span id="labelTheoryCash" class="metric-label"></span>
+        <span id="theory-cash" class="stat-value metric-value">¥0</span>
+      </div>
+
+      <div class="metric-row" style="border-bottom: none">
+        <span id="labelCashCheck" class="metric-label"></span>
+        <input
+          type="number"
+          id="actual-cash"
+          class="metric-input"
+          placeholder=""
+        />
+      </div>
+      <p id="diff-report"></p>
+
+      <p id="openStatus" class="open-status"></p>
+      <div class="ops-row">
+        <button
+          id="startBtn"
+          class="btn-secondary"
+          onclick="startBusiness()"
+        ></button>
+        <button
+          id="logoutBtn"
+          class="btn-secondary"
+          onclick="logout()"
+        ></button>
+      </div>
+      <div class="export-row">
+        <input type="date" id="export-start-date" />
+        <input type="date" id="export-end-date" />
+        <button
+          id="exportCsvBtn"
+          class="btn-secondary"
+          onclick="exportFinanceCsv()"
+        ></button>
+      </div>
+      <button id="closeBtn" class="btn-close" onclick="closeDay()"></button>
+    </div>
+    <div id="uiAlertModal" class="ui-alert-modal">
+      <div class="ui-alert-card">
+        <div id="uiAlertMessage" class="ui-alert-message"></div>
+        <div class="ui-alert-actions">
+          <button id="uiAlertCancelBtn" class="ui-alert-cancel" type="button"></button>
+          <button id="uiAlertOkBtn" type="button"></button>
+        </div>
+      </div>
+    </div>
+
+    <div id="adminTokenHelpModal" class="modal">
+      <div class="modal-content admin-settings-modal-card">
+        <div class="edit-order-head">
+          <h3 id="adminTokenHelpTitle"></h3>
+          <button type="button" id="adminTokenHelpCloseBtn" aria-label="Close">×</button>
+        </div>
+        <p id="adminTokenHelpBody" class="edit-order-sub" style="white-space: pre-line; margin-bottom: 14px"></p>
+        <div class="manager-totp-enroll-actions">
+          <button type="button" id="adminTokenHelpReloginBtn" class="manager-paid-edit-btn manager-paid-edit-btn--primary"></button>
+        </div>
+      </div>
+    </div>
+    <div id="adminAboutModal" class="modal">
+      <div class="modal-content admin-settings-modal-card">
+        <div class="edit-order-head">
+          <h3 id="adminAboutTitle"></h3>
+          <button type="button" id="adminAboutCloseBtn" aria-label="Close">×</button>
+        </div>
+        <p id="adminAboutVersion" class="admin-about-version"></p>
+        <p id="adminAboutBody" class="admin-about-body"></p>
+        <div class="manager-totp-enroll-actions">
+          <button type="button" id="adminAboutOkBtn" class="manager-paid-edit-btn manager-paid-edit-btn--primary"></button>
+        </div>
+      </div>
+    </div>
+    <div id="adminTotpRotateModal" class="modal">
+      <div class="modal-content admin-settings-modal-card">
+        <div class="edit-order-head">
+          <h3 id="adminTotpRotateTitle"></h3>
+          <button type="button" id="adminTotpRotateCloseBtn" aria-label="Close">×</button>
+        </div>
+        <p id="adminTotpRotateHint" class="edit-order-sub" style="margin-bottom: 10px"></p>
+        <label style="display: flex; flex-direction: column; gap: 6px">
+          <span id="adminTotpRotateLabel" style="font-size: 13px; font-weight: 500; color: #334155"></span>
+          <input
+            id="adminTotpRotateInput"
+            class="manager-paid-edit-reason-input"
+            type="text"
+            inputmode="numeric"
+            maxlength="8"
+            autocomplete="one-time-code"
+          />
+        </label>
+        <div class="manager-totp-enroll-actions">
+          <button type="button" id="adminTotpRotateCancelBtn" class="manager-paid-edit-btn"></button>
+          <button type="button" id="adminTotpRotateNextBtn" class="manager-paid-edit-btn manager-paid-edit-btn--primary"></button>
+        </div>
+      </div>
+    </div>
+    <div id="managerTotpEnrollModal" class="modal">
+      <div class="modal-content manager-totp-enroll-modal-card">
+        <div class="edit-order-head">
+          <h3 id="managerTotpEnrollModalTitle"></h3>
+          <button type="button" id="managerTotpEnrollModalCloseBtn">×</button>
+        </div>
+        <p id="managerTotpEnrollModalIntro" class="edit-order-sub"></p>
+        <div class="manager-totp-enroll-panel-inner">
+          <img id="managerTotpQrImg" alt="" width="220" height="220" style="display: block; margin: 0 auto; image-rendering: pixelated" />
+          <p id="managerTotpSecretCaption" style="margin: 12px 0 4px; font-size: 13px; color: #64748b"></p>
+          <code id="managerTotpSecretText" style="display: block; word-break: break-all; font-size: 13px; margin-bottom: 12px"></code>
+          <label style="display: flex; flex-direction: column; gap: 6px">
+            <span id="managerTotpConfirmLabel" style="font-size: 13px; font-weight: 500; color: #334155"></span>
+            <input
+              id="managerTotpConfirmInput"
+              class="manager-paid-edit-reason-input"
+              type="text"
+              inputmode="numeric"
+              maxlength="8"
+              autocomplete="one-time-code"
+            />
+          </label>
+          <div class="manager-totp-enroll-actions">
+            <button type="button" id="managerTotpCancelBtn" class="manager-paid-edit-btn"></button>
+            <button type="button" id="managerTotpConfirmBtn" class="manager-paid-edit-btn manager-paid-edit-btn--primary"></button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/js/shared/staff-auth.js"></script>
+    <script src="/js/shared/staff-settings-ui.js"></script>
+    <script src="/js/finance/main.js"></script>
+  </body>
+</html>

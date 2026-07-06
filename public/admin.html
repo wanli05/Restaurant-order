@@ -1,0 +1,1724 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="app-version" content="1.0.0">
+  <title>Checkout System</title>
+
+  <style>
+    :root {
+      --bg: #f3f5f7;
+      --card: #ffffff;
+      --line: #e5e7eb;
+      --text: #111827;
+      --muted: #6b7280;
+      --primary: #2563eb;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 14px;
+      font-family:
+        -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans JP",
+        "Noto Sans SC", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.4;
+    }
+
+    h1 {
+      margin: 0 0 14px 0;
+      font-size: clamp(28px, 4.2vw, 36px);
+      letter-spacing: 0.2px;
+    }
+
+    h1, h2 {
+      margin: 0 0 10px 0;
+    }
+
+    h2 {
+      margin-top: 16px;
+      font-size: clamp(24px, 3.6vw, 32px);
+      letter-spacing: 0.1px;
+    }
+
+    .module-block {
+      margin-bottom: 14px;
+      padding: 10px;
+      border: 1px solid #dfe4ea;
+      border-radius: 14px;
+      background: #eef2f6;
+    }
+
+    .module-title {
+      margin: 0 0 10px 0;
+      padding: 8px 10px;
+      border-radius: 10px;
+      background: #f8fafc;
+      border: 1px solid #e5e7eb;
+    }
+
+    hr {
+      border: 0;
+      border-top: 1px solid var(--line);
+      margin: 14px 0;
+    }
+
+    ul {
+      list-style: none;
+      padding-left: 0;
+      margin: 0;
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    button {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 8px 10px;
+      background: #fff;
+      cursor: pointer;
+      transition: background-color 0.15s ease, border-color 0.15s ease;
+      min-height: 36px;
+    }
+
+    button:hover {
+      background: #f9fafb;
+      border-color: #d1d5db;
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    button:focus-visible,
+    input:focus-visible,
+    select:focus-visible {
+      outline: 2px solid #2563eb;
+      outline-offset: 1px;
+    }
+
+    input,
+    select {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 6px 8px;
+      min-height: 34px;
+      background: #fff;
+    }
+
+    label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin: 4px 6px 4px 0;
+    }
+
+    .row {
+      margin-bottom: 8px;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 4px;
+    }
+
+    .highlight {
+      background-color: #fff3f3;
+      border: 1px solid #ffb8b8;
+      border-left: 4px solid #ef4444;
+      padding: 5px;
+    }
+
+    @keyframes blink {
+      0% { background-color: #ffe5e5; }
+      50% { background-color: #ffcccc; }
+      100% { background-color: #ffe5e5; }
+    }
+
+    .summary-header {
+      cursor: pointer;
+      padding: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .summary-main {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px;
+      min-width: 0;
+    }
+
+    .summary-amount {
+      color: #dc2626;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .summary-pending {
+      color: #b45309;
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+    .summary-warning {
+      color: #b91c1c;
+      background: #ffe4e6;
+      border: 1px solid #fecdd3;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 2px 8px;
+      white-space: nowrap;
+    }
+
+    .pay-btn {
+      background: #ffffff;
+      border: 1px solid #d1d5db;
+      border-radius: 10px;
+      padding: 6px 10px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .summary-detail {
+      margin-left: 12px;
+      margin-right: 8px;
+      border-left: 3px solid #d1d5db;
+      padding-left: 10px;
+      padding-bottom: 2px;
+    }
+
+    .admin-header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+
+    .lang-bar {
+      margin-bottom: 0;
+      display: inline-flex;
+      gap: 8px;
+      padding: 4px;
+      background: #eceff3;
+      border-radius: 12px;
+    }
+
+    .admin-settings-wrap {
+      position: relative;
+      margin-left: auto;
+    }
+
+    .admin-settings-trigger {
+      min-height: 38px;
+      min-width: 44px;
+      padding: 0 12px;
+      border: 1px solid #d1d5db;
+      border-radius: 10px;
+      background: #fff;
+      cursor: pointer;
+      font: inherit;
+      font-weight: 600;
+      font-size: 18px;
+      line-height: 1;
+      color: #374151;
+    }
+
+    .admin-settings-trigger:hover {
+      border-color: #93c5fd;
+      background: #f8fafc;
+    }
+
+    .admin-settings-trigger[aria-expanded="true"] {
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.18);
+    }
+
+    .admin-settings-menu {
+      display: none;
+      position: absolute;
+      right: 0;
+      top: calc(100% + 6px);
+      min-width: min(320px, calc(100vw - 40px));
+      flex-direction: column;
+      gap: 2px;
+      padding: 6px;
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      box-shadow: 0 12px 28px rgba(15, 23, 42, 0.14);
+      z-index: 1100;
+    }
+
+    .admin-settings-menu.show {
+      display: flex;
+    }
+
+    .admin-settings-menu button {
+      width: 100%;
+      text-align: left;
+      padding: 10px 12px;
+      border: none;
+      border-radius: 8px;
+      background: transparent;
+      cursor: pointer;
+      font: inherit;
+      font-size: 14px;
+      font-weight: 500;
+      color: #1f2937;
+      line-height: 1.35;
+    }
+
+    .admin-settings-menu button:hover {
+      background: #f1f5f9;
+    }
+
+    #adminTokenHelpModal.modal,
+    #adminAboutModal.modal,
+    #adminTotpRotateModal.modal {
+      z-index: 1330;
+    }
+
+    .admin-settings-modal-card {
+      width: min(480px, 100%);
+      max-height: calc(86vh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
+      max-height: calc(
+        86dvh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)
+      );
+    }
+
+    .admin-settings-modal-card .admin-about-version {
+      font-weight: 700;
+      font-size: 15px;
+      margin: 0 0 10px;
+      color: #111827;
+    }
+
+    .admin-settings-modal-card .admin-about-body {
+      white-space: pre-line;
+      margin: 0;
+      font-size: 13px;
+      color: #4b5563;
+      line-height: 1.5;
+    }
+    .top-nav {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .top-nav button {
+      min-height: 38px;
+      border: 1px solid #d1d5db;
+      border-radius: 10px;
+      background: #fff;
+      cursor: pointer;
+      font: inherit;
+      font-weight: 600;
+    }
+    .open-warning {
+      margin: 0 0 12px 0;
+      padding: 10px 12px;
+      border-radius: 10px;
+  border: 1px solid #fecaca;
+  background: #fff1f2;
+  color: #b91c1c;
+      font-weight: 600;
+    }
+.open-warning.open {
+  border-color: #86efac;
+  background: #f0fdf4;
+  color: #166534;
+    }
+
+    .history-filters {
+      margin-bottom: 12px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .history-grid-two {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px 14px;
+      align-items: center;
+    }
+
+    .history-field {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .history-label {
+      white-space: nowrap;
+      min-width: 86px;
+    }
+
+    .history-field input {
+      flex: 1;
+      width: 100%;
+    }
+
+    .history-search-btn {
+      width: 100%;
+      min-height: 38px;
+      font-weight: 600;
+    }
+
+    .history-pager {
+      margin-top: 10px;
+      display: flex;
+      gap: 8px;
+    }
+
+    .raw-table-card {
+      margin-bottom: 10px;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      background: #fff;
+      padding: 10px;
+    }
+
+    .orders-live-summary {
+      margin-bottom: 10px;
+      padding: 8px 10px;
+      border: 1px solid #dbe5f1;
+      border-radius: 10px;
+      background: #f8fbff;
+      color: #334155;
+      font-size: 14px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .raw-table-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .raw-table-title {
+      font-weight: 700;
+    }
+
+    .raw-order-row {
+      margin-bottom: 6px;
+      padding: 6px 8px;
+      border: 1px solid #edf0f4;
+      border-radius: 8px;
+      background: #fafbfc;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .raw-order-main {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .status-badge {
+      border-radius: 999px;
+      padding: 2px 8px;
+      font-size: 12px;
+      font-weight: 700;
+      border: 1px solid transparent;
+    }
+
+    .status-badge.pending {
+      color: #b45309;
+      background: #fff7ed;
+      border-color: #fed7aa;
+    }
+
+    .status-badge.done {
+      color: #0f766e;
+      background: #ecfeff;
+      border-color: #a5f3fc;
+    }
+
+    .status-badge.paid,
+    .status-badge.archived {
+      color: #166534;
+      background: #f0fdf4;
+      border-color: #bbf7d0;
+    }
+
+    /* 模态框背景 */
+.modal {
+  display: none; 
+  position: fixed; 
+  z-index: 1000; 
+  left: 0; top: 0;
+  width: 100%; height: 100%;
+  background-color: rgba(0,0,0,0.5); 
+}
+
+.ui-alert-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.42);
+  backdrop-filter: blur(2px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+  z-index: 1300;
+}
+
+.ui-alert-modal.show {
+  display: flex;
+}
+
+.ui-alert-card {
+  width: min(540px, 100%);
+  background: #fff;
+  border: 1px solid #dbe2ea;
+  border-radius: 16px;
+    padding: 16px;
+  max-height: calc(78vh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
+  max-height: calc(
+    78dvh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)
+  );
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: contain;
+  box-shadow: 0 14px 34px rgba(2, 6, 23, 0.26);
+}
+
+.ui-alert-message {
+  margin: 0 0 12px 0;
+  color: #0f172a;
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+
+.ui-alert-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+.ui-alert-actions button {
+  min-width: 72px;
+  min-height: 38px;
+}
+#uiAlertOkBtn {
+  background: #2563eb;
+  border-color: #1d4ed8;
+  color: #fff;
+}
+#uiAlertOkBtn:hover {
+  background: #1d4ed8;
+}
+
+.ui-alert-cancel {
+  display: none;
+}
+
+.ui-alert-cancel.show {
+  display: inline-flex;
+}
+
+.pay-method-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.42);
+  backdrop-filter: blur(2px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+  z-index: 1210;
+}
+
+.pay-method-modal.show {
+  display: flex;
+}
+
+.pay-method-card {
+  width: min(540px, 100%);
+  background: #fff;
+  border: 1px solid #dbe2ea;
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 14px 34px rgba(2, 6, 23, 0.26);
+}
+
+.pay-method-title {
+  margin: 0 0 12px;
+  color: #0f172a;
+  font-weight: 700;
+}
+
+.pay-method-actions {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.pay-method-actions button {
+  min-height: 40px;
+}
+
+.pay-method-cancel {
+  margin-top: 10px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.manager-paid-delete-card {
+  width: min(420px, 100%);
+}
+
+.manager-paid-delete-hint {
+  margin: 0 0 14px;
+  color: #64748b;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.manager-paid-delete-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 14px;
+  align-items: stretch;
+  text-align: left;
+}
+
+.manager-paid-delete-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: #334155;
+}
+
+.manager-paid-delete-input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  font-size: 15px;
+  background: #fff;
+}
+
+.manager-paid-delete-input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.18);
+}
+
+.manager-paid-delete-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.manager-paid-delete-actions button {
+  min-height: 42px;
+  border-radius: 10px;
+  border: 1px solid #cbd5e1;
+  background: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.manager-paid-delete-actions button:first-child {
+  border-color: #fca5a5;
+  color: #b91c1c;
+  background: #fef2f2;
+}
+
+.manager-paid-delete-actions button:last-child:hover {
+  background: #f8fafc;
+}
+
+.manager-paid-delete-actions button:first-child:hover {
+  background: #fee2e2;
+}
+
+/* 历史订单 · 纠错修改（金额 / 支付 / 人数 / 桌号） */
+.modal-content.manager-paid-edit-sheet {
+  width: min(440px, 100%);
+  max-width: 440px;
+  max-height: min(
+    560px,
+    calc(85vh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px))
+  );
+  max-height: min(
+    560px,
+    calc(85dvh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px))
+  );
+  box-sizing: border-box;
+  display: block;
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: contain;
+  padding: 16px;
+}
+
+.manager-paid-edit-step {
+  display: flex;
+  flex-direction: column;
+}
+
+.manager-paid-edit-stack {
+  flex-shrink: 0;
+}
+
+.manager-paid-edit-sub {
+  margin-bottom: 12px !important;
+}
+
+.manager-paid-edit-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+.manager-paid-edit-field-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: #334155;
+}
+
+.manager-paid-edit-reason-input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  font-size: 15px;
+  background: #fff;
+}
+
+.manager-paid-edit-reason-input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.18);
+}
+
+.manager-paid-edit-caption {
+  margin: 0 0 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #334155;
+}
+
+.manager-paid-edit-checks {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px 12px;
+  margin-bottom: 12px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+}
+
+.manager-paid-edit-check {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  font-size: 13px;
+  color: #1e293b;
+  margin: 0;
+}
+
+.manager-paid-edit-check input {
+  width: 16px;
+  height: 16px;
+  accent-color: #2563eb;
+  flex-shrink: 0;
+}
+
+.manager-paid-edit-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 2px 0 12px;
+}
+
+.manager-paid-edit-foot {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding-top: 14px;
+  margin-top: 12px;
+  border-top: 1px solid #f1f5f9;
+  position: sticky;
+  bottom: 0;
+  background: #fff;
+  box-shadow: 0 -10px 24px #fff;
+  z-index: 1;
+}
+
+.manager-paid-edit-btn {
+  min-height: 40px;
+  padding: 0 18px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid #cbd5e1;
+  background: #fff;
+  color: #334155;
+}
+
+.manager-paid-edit-btn:hover {
+  background: #f8fafc;
+}
+
+.manager-paid-edit-btn--primary {
+  border-color: #3b82f6;
+  background: #eff6ff;
+  color: #1d4ed8;
+}
+
+.manager-paid-edit-btn--primary:hover {
+  background: #dbeafe;
+}
+
+.manager-paid-meta-card {
+  padding: 12px 14px;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05);
+}
+
+.manager-paid-meta-card-title {
+  font-weight: 600;
+  font-size: 13px;
+  color: #0f172a;
+  margin-bottom: 10px;
+}
+
+.manager-paid-meta-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+@media (max-width: 380px) {
+  .manager-paid-meta-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.manager-paid-meta-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin: 0;
+  text-align: left;
+  align-items: stretch;
+}
+
+.manager-paid-meta-field > span {
+  font-size: 12px;
+  font-weight: 500;
+  color: #64748b;
+}
+
+.manager-paid-meta-control {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 9px 10px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  font-size: 14px;
+  background: #fff;
+}
+
+.manager-paid-meta-control--readonly {
+  background: #f1f5f9;
+  color: #475569;
+  cursor: default;
+}
+
+.manager-paid-meta-control:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.22);
+}
+
+.manager-paid-meta-control--readonly:focus {
+  border-color: #cbd5e1;
+  box-shadow: none;
+}
+
+select.manager-paid-meta-control {
+  cursor: pointer;
+}
+
+.manager-paid-edit-step--totp {
+  padding-top: 2px;
+}
+
+.manager-paid-edit-totp-hint {
+  font-size: 13px;
+  color: #334155;
+  margin: 0 0 10px;
+  line-height: 1.45;
+}
+
+.manager-paid-edit-totp-input {
+  width: 100%;
+  max-width: 260px;
+  box-sizing: border-box;
+  padding: 10px 12px;
+  margin-bottom: 14px;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  font-size: 17px;
+  letter-spacing: 0.1em;
+  font-variant-numeric: tabular-nums;
+}
+
+.manager-paid-edit-totp-input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.18);
+}
+
+.manager-paid-edit-totp-foot {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.manager-totp-enroll-modal-card {
+  width: min(380px, 100%);
+  max-height: calc(90vh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
+  max-height: calc(
+    90dvh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)
+  );
+  overflow-x: hidden;
+  overflow-y: auto;
+  box-sizing: border-box;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: contain;
+}
+
+.manager-totp-enroll-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid #f1f5f9;
+}
+
+#managerTotpEnrollModal.modal {
+  z-index: 1320;
+}
+
+.modal-content.manager-paid-edit-sheet .edit-order-head {
+  flex-shrink: 0;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: #fff;
+  padding-bottom: 8px;
+  margin-bottom: 4px;
+}
+
+.modal.show {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: max(14px, env(safe-area-inset-top, 0px)) max(14px, env(safe-area-inset-right, 0px))
+    max(14px, env(safe-area-inset-bottom, 0px)) max(14px, env(safe-area-inset-left, 0px));
+}
+
+.modal-content {
+  width: min(680px, 100%);
+  max-height: calc(82vh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
+  max-height: calc(
+    82dvh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)
+  );
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: contain;
+  background: #fff;
+  border-radius: 16px;
+  border: 1px solid #e5e7eb;
+  padding: 14px;
+  box-shadow: 0 14px 34px rgba(2, 6, 23, 0.26);
+}
+
+.edit-order-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.edit-order-sub {
+  color: #6b7280;
+  font-size: 13px;
+  margin-bottom: 10px;
+}
+
+.edit-order-list {
+  display: grid;
+  gap: 8px;
+}
+
+.edit-item-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 8px 10px;
+  background: #f9fafb;
+}
+
+.edit-item-name {
+  font-weight: 600;
+}
+
+.edit-item-controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.edit-item-qty {
+  min-width: 22px;
+  text-align: center;
+  font-weight: 700;
+}
+
+.edit-order-foot {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.edit-order-total {
+  font-weight: 700;
+}
+
+.staff-order-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.42);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1220;
+  padding: max(14px, env(safe-area-inset-top, 0px)) max(14px, env(safe-area-inset-right, 0px))
+    max(14px, env(safe-area-inset-bottom, 0px)) max(14px, env(safe-area-inset-left, 0px));
+}
+
+.staff-order-modal.show {
+  display: flex;
+}
+
+.staff-order-card {
+  width: min(860px, 100%);
+  max-height: calc(85vh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
+  max-height: calc(
+    85dvh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)
+  );
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: contain;
+  background: #fff;
+  border-radius: 16px;
+  border: 1px solid #e5e7eb;
+  padding: 14px;
+}
+
+.staff-order-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.staff-order-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.staff-order-box {
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  background: #f9fafb;
+  padding: 10px;
+}
+
+.staff-order-category-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.staff-order-category-btn {
+  min-height: 30px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  font-size: 12px;
+}
+
+.staff-order-category-btn.active {
+  background: #2563eb;
+  color: #fff;
+  border-color: #1d4ed8;
+}
+
+.staff-order-menu-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 0;
+  border-bottom: 1px dashed #e2e8f0;
+}
+
+.staff-order-menu-row:last-child {
+  border-bottom: 0;
+}
+
+.staff-order-controls {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.staff-order-foot {
+  margin-top: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.empty-tables-wrap {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 10px;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+}
+
+.empty-tables-sub {
+  color: var(--muted);
+  font-size: 12px;
+  margin-bottom: 8px;
+}
+
+.empty-tables-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.empty-table-chip {
+  min-width: 58px;
+  min-height: 32px;
+  border-radius: 999px;
+  border: 1px solid #cbd5e1;
+  background: #f8fafc;
+  color: #0f172a;
+  font-weight: 700;
+}
+
+.quick-seat-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(2, 6, 23, 0.45);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1200;
+  padding: max(16px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px))
+    max(16px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
+}
+
+@media (max-width: 767px) {
+  .quick-seat-modal {
+    /* 仅保留 safe-area + 少量缓冲，避免像新课开台那样被工具栏裁切 */
+    padding-bottom: max(12px, calc(env(safe-area-inset-bottom, 0px) + 10px));
+  }
+}
+
+.quick-seat-modal.show {
+  display: flex;
+}
+
+.quick-seat-card {
+  width: min(420px, 94vw);
+  background: #fff;
+  border-radius: 14px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.16);
+  padding: 14px;
+}
+
+.quick-seat-table {
+  color: #334155;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+.quick-seat-label {
+  font-size: 13px;
+  color: #475569;
+  display: block;
+  margin-bottom: 6px;
+}
+
+.quick-seat-input {
+  width: 100%;
+  min-height: 38px;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  padding: 0 10px;
+  font-size: 16px;
+}
+
+.quick-seat-actions {
+  margin-top: 12px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.quick-order-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(2, 6, 23, 0.55);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1300;
+  padding: max(10px, env(safe-area-inset-top, 0px)) max(10px, env(safe-area-inset-right, 0px))
+    max(10px, env(safe-area-inset-bottom, 0px)) max(10px, env(safe-area-inset-left, 0px));
+}
+
+@media (max-width: 767px) {
+  .quick-order-modal {
+    /* 外层略大于 safe-area 即可；iframe 内由 index 自行处理底栏，勿重复扣减一整条工具栏高度 */
+    padding: max(8px, env(safe-area-inset-top, 0px)) max(8px, env(safe-area-inset-right, 0px))
+      max(10px, calc(env(safe-area-inset-bottom, 0px) + 8px)) max(8px, env(safe-area-inset-left, 0px));
+    align-items: stretch;
+    justify-content: stretch;
+  }
+}
+
+.quick-order-modal.show {
+  display: flex;
+}
+
+@media (max-width: 767px) {
+  .quick-order-modal.show {
+    flex-direction: column;
+  }
+}
+
+.quick-order-card {
+  width: min(1260px, 98vw);
+  height: min(
+    880px,
+    calc(
+      96vh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px) - 24px
+    )
+  );
+  height: min(
+    880px,
+    calc(
+      96dvh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px) - 24px
+    )
+  );
+  background: #fff;
+  border: 1px solid #cbd5e1;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 14px 36px rgba(15, 23, 42, 0.2);
+  display: flex;
+  flex-direction: column;
+}
+
+@media (max-width: 767px) {
+  .quick-order-card {
+    width: 100%;
+    /* 填满遮罩层内容区：去掉基于 100dvh 再扣 88px 的上限，避免 iPhone 15 Pro 一类机型下半屏留白过大 */
+    height: auto;
+    max-height: none;
+    flex: 1;
+    min-height: 0;
+  }
+}
+
+.quick-order-head {
+  min-height: 44px;
+  padding: 8px 10px;
+  border-bottom: 1px solid #e5e7eb;
+  background: #f8fafc;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.quick-order-frame {
+  border: 0;
+  width: 100%;
+  flex: 1;
+  background: #fff;
+}
+
+@media (max-width: 767px) {
+  .staff-order-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+#summary, #orders, #history-list {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 10px;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+}
+
+#history-summary {
+  color: var(--muted) !important;
+  margin-top: 2px;
+}
+
+.history-head-row {
+  margin-bottom: 8px;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  padding: 8px 10px;
+  background: #f8fafc;
+}
+
+.history-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.35fr 0.95fr 0.95fr 0.85fr 0.8fr;
+  gap: 8px;
+  align-items: center;
+}
+
+.history-head-grid {
+  font-size: 13px;
+  font-weight: 700;
+  color: #334155;
+}
+
+.history-order-row {
+  margin-bottom: 8px;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 8px 10px;
+  background: #fff;
+  box-shadow: 0 1px 4px rgba(15, 23, 42, 0.04);
+}
+
+.history-order-title {
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.history-order-detail {
+  display: none;
+  margin-top: 8px;
+  padding: 8px 10px;
+  border-left: 3px solid #ddd;
+  background: #f8fafc;
+  border-radius: 8px;
+}
+
+.history-order-detail.show {
+  display: block;
+}
+
+@media (min-width: 768px) {
+  body {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 16px;
+  }
+
+  .row {
+    margin-bottom: 10px;
+  }
+}
+
+@media (max-width: 767px) {
+  .history-grid-two {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+}
+
+@media (min-width: 1024px) {
+  body {
+    max-width: 1260px;
+    padding: 20px;
+  }
+}
+</style>
+
+<div class="admin-header-row">
+  <div class="lang-bar">
+    <button type="button" onclick="setLang('ja')">日本語</button>
+    <button type="button" onclick="setLang('zh')">中文</button>
+  </div>
+  <div class="admin-settings-wrap">
+    <button
+      type="button"
+      id="adminSettingsTrigger"
+      class="admin-settings-trigger"
+      aria-expanded="false"
+      aria-haspopup="true"
+      aria-controls="adminSettingsMenu"
+      title=""
+    >
+      ⚙
+    </button>
+    <div id="adminSettingsMenu" class="admin-settings-menu" role="menu" aria-labelledby="adminSettingsTrigger">
+      <button type="button" role="menuitem" id="adminSettingsMenuTotpBtn"></button>
+      <button type="button" role="menuitem" id="adminSettingsMenuTokenBtn"></button>
+      <button type="button" role="menuitem" id="adminSettingsMenuAboutBtn"></button>
+    </div>
+  </div>
+</div>
+<div class="top-nav">
+  <button id="navAdminBtn" type="button" onclick="openModule('/admin.html')"></button>
+  <button id="navKitchenBtn" type="button" onclick="openModule('/kitchen.html')"></button>
+  <button id="navFinanceBtn" type="button" onclick="openModule('/finance.html')"></button>
+  <button id="navRecoveryBtn" type="button" onclick="openModule('/recovery.html')"></button>
+</div>
+<h1 id="pageTitle"></h1>
+<div id="openWarning" class="open-warning"></div>
+
+<section class="module-block">
+  <!-- ===================== -->
+  <!-- 📦 所有订单 -->
+  <!-- ===================== -->
+  <h2 id="ordersTitle" class="module-title"></h2>
+  <ul id="orders"></ul>
+</section>
+
+<section class="module-block">
+  <!-- ===================== -->
+  <!-- 💰 按桌汇总 -->
+  <!-- ===================== -->
+  <h2 id="summaryTitle" class="module-title"></h2>
+  <div id="summary"></div>
+  <div class="empty-tables-wrap" style="margin-top: 10px;">
+    <h3 id="emptyTableTitle" style="margin: 0 0 6px 0; font-size: 16px;"></h3>
+    <div id="emptyTableHint" class="empty-tables-sub"></div>
+    <div id="emptyTableList" class="empty-tables-list"></div>
+  </div>
+</section>
+
+<section class="module-block">
+  <h2 id="historyTitle" class="module-title"></h2>
+  <div class="history-filters">
+    <div class="history-grid-two">
+      <label class="history-field"><span class="history-label"><span id="labelOrderNo"></span>：</span><input id="history-order-no" placeholder="" /></label>
+      <label class="history-field"><span class="history-label"><span id="labelTable"></span>：</span><input id="history-table" placeholder="" /></label>
+    </div>
+    <div class="history-grid-two">
+      <label class="history-field"><span class="history-label"><span id="labelStart"></span>：</span><input id="history-start" type="datetime-local" /></label>
+      <label class="history-field"><span class="history-label"><span id="labelEnd"></span>：</span><input id="history-end" type="datetime-local" /></label>
+    </div>
+    <button id="searchBtn" class="history-search-btn" onclick="searchHistory(1)"></button>
+  </div>
+  <div id="history-summary" style="margin-bottom: 8px;"></div>
+  <ul id="history-list"></ul>
+  <div class="history-pager">
+    <button type="button" id="historyPrevBtn" onclick="prevHistoryPage()"></button>
+    <button type="button" id="historyNextBtn" onclick="nextHistoryPage()"></button>
+  </div>
+</section>
+
+<div id="staffOrderModal" class="staff-order-modal">
+  <div class="staff-order-card">
+    <div class="staff-order-head">
+      <h3 id="staffOrderTitle"></h3>
+      <div>
+        <span id="staffOrderTable"></span>
+      </div>
+    </div>
+    <div id="staffOrderSessionInfo" style="margin-bottom: 8px; color: #475569;"></div>
+    <div class="staff-order-grid">
+      <div class="staff-order-box">
+        <h4 id="staffOrderCurrentTitle" style="margin: 0 0 8px 0;"></h4>
+        <div id="staffOrderCurrentList"></div>
+      </div>
+      <div class="staff-order-box">
+        <h4 id="staffOrderMenuTitle" style="margin: 0 0 8px 0;"></h4>
+        <div id="staffOrderCategoryBar" class="staff-order-category-bar"></div>
+        <div id="staffOrderMenuList"></div>
+      </div>
+    </div>
+    <div class="staff-order-box" style="margin-top: 10px;">
+      <h4 id="staffOrderCartPanelTitle" style="margin: 0 0 8px 0;"></h4>
+      <div id="staffOrderCartList"></div>
+    </div>
+    <div class="staff-order-foot">
+      <b id="staffOrderCartTotal">¥0</b>
+      <div style="display:flex; gap:6px;">
+        <button id="staffOrderSubmitBtn" type="button"></button>
+        <button id="staffOrderCloseBtn" type="button"></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="editOrderModal" class="modal">
+  <div class="modal-content">
+    <div class="edit-order-head">
+      <h3 id="editOrderTitle"></h3>
+      <button type="button" id="editOrderCloseBtn">×</button>
+    </div>
+    <div id="editOrderSub" class="edit-order-sub"></div>
+    <div id="editOrderList" class="edit-order-list"></div>
+    <div class="edit-order-foot">
+      <span id="editOrderTotal" class="edit-order-total"></span>
+      <div>
+        <button type="button" id="editOrderCancelBtn"></button>
+        <button type="button" id="editOrderSaveBtn"></button>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="uiAlertModal" class="ui-alert-modal">
+  <div class="ui-alert-card">
+    <p id="uiAlertMessage" class="ui-alert-message"></p>
+    <div class="ui-alert-actions">
+      <button id="uiAlertCancelBtn" class="ui-alert-cancel" type="button"></button>
+      <button id="uiAlertOkBtn" type="button"></button>
+    </div>
+  </div>
+</div>
+<div id="adminTokenHelpModal" class="modal">
+  <div class="modal-content admin-settings-modal-card">
+    <div class="edit-order-head">
+      <h3 id="adminTokenHelpTitle"></h3>
+      <button type="button" id="adminTokenHelpCloseBtn" aria-label="Close">×</button>
+    </div>
+    <p id="adminTokenHelpBody" class="edit-order-sub" style="white-space: pre-line; margin-bottom: 14px;"></p>
+    <div class="manager-totp-enroll-actions">
+      <button type="button" id="adminTokenHelpReloginBtn" class="manager-paid-edit-btn manager-paid-edit-btn--primary"></button>
+    </div>
+  </div>
+</div>
+<div id="adminAboutModal" class="modal">
+  <div class="modal-content admin-settings-modal-card">
+    <div class="edit-order-head">
+      <h3 id="adminAboutTitle"></h3>
+      <button type="button" id="adminAboutCloseBtn" aria-label="Close">×</button>
+    </div>
+    <p id="adminAboutVersion" class="admin-about-version"></p>
+    <p id="adminAboutBody" class="admin-about-body"></p>
+    <div class="manager-totp-enroll-actions">
+      <button type="button" id="adminAboutOkBtn" class="manager-paid-edit-btn manager-paid-edit-btn--primary"></button>
+    </div>
+  </div>
+</div>
+<div id="adminTotpRotateModal" class="modal">
+  <div class="modal-content admin-settings-modal-card">
+    <div class="edit-order-head">
+      <h3 id="adminTotpRotateTitle"></h3>
+      <button type="button" id="adminTotpRotateCloseBtn" aria-label="Close">×</button>
+    </div>
+    <p id="adminTotpRotateHint" class="edit-order-sub" style="margin-bottom: 10px;"></p>
+    <label style="display: flex; flex-direction: column; gap: 6px;">
+      <span id="adminTotpRotateLabel" style="font-size: 13px; font-weight: 500; color: #334155;"></span>
+      <input
+        id="adminTotpRotateInput"
+        class="manager-paid-edit-reason-input"
+        type="text"
+        inputmode="numeric"
+        maxlength="8"
+        autocomplete="one-time-code"
+      />
+    </label>
+    <div class="manager-totp-enroll-actions">
+      <button type="button" id="adminTotpRotateCancelBtn" class="manager-paid-edit-btn"></button>
+      <button type="button" id="adminTotpRotateNextBtn" class="manager-paid-edit-btn manager-paid-edit-btn--primary"></button>
+    </div>
+  </div>
+</div>
+<div id="managerTotpEnrollModal" class="modal">
+  <div class="modal-content manager-totp-enroll-modal-card">
+    <div class="edit-order-head">
+      <h3 id="managerTotpEnrollModalTitle"></h3>
+      <button type="button" id="managerTotpEnrollModalCloseBtn">×</button>
+    </div>
+    <p id="managerTotpEnrollModalIntro" class="edit-order-sub"></p>
+    <div class="manager-totp-enroll-panel-inner">
+      <img id="managerTotpQrImg" alt="Authenticator QR" width="220" height="220" style="display: block; margin: 0 auto; image-rendering: pixelated;" />
+      <p id="managerTotpSecretCaption" style="margin: 12px 0 4px; font-size: 13px; color: #64748b;"></p>
+      <code id="managerTotpSecretText" style="display: block; word-break: break-all; font-size: 13px; margin-bottom: 12px;"></code>
+      <label style="display: flex; flex-direction: column; gap: 6px;">
+        <span id="managerTotpConfirmLabel" style="font-size: 13px; font-weight: 500; color: #334155;"></span>
+        <input
+          id="managerTotpConfirmInput"
+          class="manager-paid-edit-reason-input"
+          type="text"
+          inputmode="numeric"
+          maxlength="8"
+          autocomplete="one-time-code"
+        />
+      </label>
+      <div class="manager-totp-enroll-actions">
+        <button type="button" id="managerTotpCancelBtn" class="manager-paid-edit-btn"></button>
+        <button type="button" id="managerTotpConfirmBtn" class="manager-paid-edit-btn manager-paid-edit-btn--primary"></button>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="managerPaidDeleteModal" class="pay-method-modal">
+  <div class="pay-method-card manager-paid-delete-card">
+    <p id="managerPaidDeleteOrderHint" class="manager-paid-delete-hint"></p>
+    <label class="manager-paid-delete-field">
+      <span id="managerPaidDeleteReasonLabel" class="manager-paid-delete-label"></span>
+      <input id="managerPaidDeleteReason" class="manager-paid-delete-input" type="text" maxlength="500" />
+    </label>
+    <label class="manager-paid-delete-field">
+      <span id="managerPaidDeleteTotpLabel" class="manager-paid-delete-label"></span>
+      <input
+        id="managerPaidDeleteTotp"
+        class="manager-paid-delete-input"
+        type="text"
+        inputmode="numeric"
+        maxlength="8"
+        autocomplete="one-time-code"
+      />
+    </label>
+    <div class="manager-paid-delete-actions">
+      <button id="managerPaidDeleteConfirmBtn" type="button"></button>
+      <button id="managerPaidDeleteCancelBtn" type="button"></button>
+    </div>
+  </div>
+</div>
+<div id="managerPaidEditModal" class="modal">
+  <div class="modal-content manager-paid-edit-sheet">
+    <div class="edit-order-head">
+      <h3 id="managerPaidEditTitle"></h3>
+      <button type="button" id="managerPaidEditCloseBtn">×</button>
+    </div>
+    <div id="managerPaidEditStep1" class="manager-paid-edit-step">
+      <div class="manager-paid-edit-stack">
+        <p id="managerPaidEditSub" class="edit-order-sub manager-paid-edit-sub"></p>
+        <label class="manager-paid-edit-field">
+          <span id="managerPaidEditReasonLabel" class="manager-paid-edit-field-label"></span>
+          <input id="managerPaidEditReason" class="manager-paid-edit-reason-input" type="text" maxlength="500" />
+        </label>
+        <p id="managerPaidEditTargetsCaption" class="manager-paid-edit-caption"></p>
+        <div id="managerPaidEditFieldsChecks" class="manager-paid-edit-checks"></div>
+      </div>
+      <div id="managerPaidEditDynamicRows" class="manager-paid-edit-rows"></div>
+      <div class="manager-paid-edit-foot">
+        <button type="button" id="managerPaidEditCancelBtn" class="manager-paid-edit-btn"></button>
+        <button type="button" id="managerPaidEditConfirmBtn" class="manager-paid-edit-btn manager-paid-edit-btn--primary"></button>
+      </div>
+    </div>
+    <div id="managerPaidEditStep2" class="manager-paid-edit-step manager-paid-edit-step--totp" style="display: none;">
+      <p id="managerPaidEditTotpPromptLabel" class="manager-paid-edit-totp-hint"></p>
+      <input
+        id="managerPaidEditTotp"
+        class="manager-paid-edit-totp-input"
+        type="text"
+        inputmode="numeric"
+        maxlength="8"
+        autocomplete="one-time-code"
+      />
+      <div class="manager-paid-edit-totp-foot">
+        <button type="button" id="managerPaidEditTotpCancelBtn" class="manager-paid-edit-btn"></button>
+        <button type="button" id="managerPaidEditSubmitBtn" class="manager-paid-edit-btn manager-paid-edit-btn--primary"></button>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="payMethodModal" class="pay-method-modal">
+  <div class="pay-method-card">
+    <p id="payMethodTitle" class="pay-method-title"></p>
+    <div class="pay-method-actions">
+      <button id="payMethodCashBtn" type="button"></button>
+      <button id="payMethodWechatBtn" type="button"></button>
+      <button id="payMethodPaypayBtn" type="button"></button>
+    </div>
+    <div class="pay-method-cancel">
+      <button id="payMethodCancelBtn" type="button"></button>
+    </div>
+  </div>
+</div>
+<div id="quickSeatModal" class="quick-seat-modal">
+  <div class="quick-seat-card">
+    <h3 id="quickSeatTitle" style="margin: 0 0 10px 0;"></h3>
+    <div id="quickSeatTableText" class="quick-seat-table"></div>
+    <label class="quick-seat-label" for="quickSeatGuestInput" id="quickSeatGuestLabel"></label>
+    <input id="quickSeatGuestInput" class="quick-seat-input" type="number" min="1" step="1" inputmode="numeric" />
+    <div class="quick-seat-actions">
+      <button id="quickSeatCancelBtn" type="button"></button>
+      <button id="quickSeatConfirmBtn" type="button"></button>
+    </div>
+  </div>
+</div>
+<div id="quickOrderModal" class="quick-order-modal">
+  <div class="quick-order-card">
+    <div class="quick-order-head">
+      <b id="quickOrderTitle"></b>
+      <button id="quickOrderCloseBtn" type="button"></button>
+    </div>
+    <iframe id="quickOrderFrame" class="quick-order-frame" src="about:blank"></iframe>
+  </div>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/shared/staff-auth.js"></script>
+<script src="/js/admin/main.js"></script>
+</body>
+</html>

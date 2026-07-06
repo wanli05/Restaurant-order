@@ -1,0 +1,31 @@
+node_modules/
+
+# Runtime / local data
+orders.db
+*.db
+*.db-shm
+*.db-wal
+artifacts/
+backups/
+test-results/
+playwright-report/
+
+# Secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.crt
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

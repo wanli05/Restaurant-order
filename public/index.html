@@ -1,0 +1,2265 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <!-- 若反向代理挂载在子路径（如 https://域名/shop/ ），填写 /shop（勿带末尾斜杠）。根路径保留空字符串。 -->
+    <meta name="app-base-path" content="" />
+    <title>Order System</title>
+    <style>
+      :root {
+        --bg: #eef3f8;
+        --card: #ffffff;
+        --text: #182233;
+        --muted: #6b7280;
+        --line: #d8e1ec;
+        --primary: #2f67e8;
+        --primary-press: #2457cd;
+        --menu-nav-width: 84px;
+        --menu-image-w: 118px;
+        --menu-image-h: 74px;
+        --menu-browser-height: auto;
+        /* iOS Safari：底部工具栏遮挡补偿（由 visualViewport 脚本写入，iframe 内可能为 0） */
+        --vv-bottom: 0px;
+        /* 底部 Tab 区域近似高度，需与 .tabbar 实际占位大致一致 */
+        --tabbar-stack: 54px;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        height: 100%;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        min-height: 100dvh;
+        padding: 10px 10px
+          calc(
+            10px + var(--tabbar-stack) + constant(safe-area-inset-bottom) + var(--vv-bottom)
+          );
+        padding: 10px 10px
+          calc(
+            10px + var(--tabbar-stack) + env(safe-area-inset-bottom, 0px) + var(--vv-bottom)
+          );
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans JP",
+          "Noto Sans SC", Arial, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        line-height: 1.4;
+        overflow: hidden;
+      }
+
+      h1,
+      h2,
+      h3,
+      p {
+        margin: 0;
+      }
+
+      button {
+        border: 0;
+        border-radius: 10px;
+        padding: 9px 11px;
+        background: #e8edf5;
+        color: #111827;
+        font-size: 14px;
+        cursor: pointer;
+      }
+
+      button:active {
+        transform: translateY(1px);
+      }
+
+      button:disabled {
+        cursor: not-allowed;
+        opacity: 0.6;
+      }
+
+      .status-lang-row {
+        display: block;
+        margin: 0 0 6px;
+        padding: 8px 10px;
+        border-radius: 12px;
+        border: 1px solid #86c8a2;
+        background: #ebf7ef;
+      }
+      .status-lang-top {
+        display: grid;
+        grid-template-columns: auto minmax(0, 1fr) auto;
+        align-items: center;
+        gap: 10px;
+        height: 36px;
+      }
+      .status-lang-row.ordering-ready .status-lang-top {
+        grid-template-columns: auto minmax(0, 1fr) auto;
+      }
+      .status-lang-row.open {
+        border-color: #73bd93;
+        background: #e6f5ec;
+      }
+      .business-status {
+        color: #14532d;
+        font-weight: 700;
+        font-size: 16px;
+        letter-spacing: 0;
+        line-height: 1.2;
+        height: 100%;
+        display: grid;
+        place-items: center start;
+        margin: 0;
+        padding-left: 8px;
+        font-family: inherit;
+      }
+      .status-lang-row.ordering-ready .business-status {
+        font-size: 16px;
+        padding-left: 8px;
+      }
+      .lang-select {
+        width: 92px;
+        min-width: 92px;
+        height: 100%;
+        min-height: 36px;
+        align-self: stretch;
+        border: 1px solid #c4d0dd;
+        border-radius: 8px;
+        justify-self: end;
+        padding: 0 26px 0 8px;
+        background: #ffffff;
+        color: #344863;
+        font-size: 15px;
+        font-weight: 600;
+        font-family: inherit;
+        -webkit-appearance: none;
+        appearance: none;
+        background-image:
+          linear-gradient(45deg, transparent 50%, #6b7f99 50%),
+          linear-gradient(135deg, #6b7f99 50%, transparent 50%);
+        background-position:
+          calc(100% - 14px) 50%,
+          calc(100% - 9px) 50%;
+        background-size: 5px 5px, 5px 5px;
+        background-repeat: no-repeat;
+      }
+      .dining-meta-inline {
+        display: none;
+        margin: 0;
+        font-size: 15px;
+        font-weight: 600;
+        color: #3f5878;
+        height: 100%;
+        align-items: center;
+        justify-content: center;
+        padding: 0 10px;
+        border-radius: 999px;
+        background: #f8fafd;
+        border: 1px solid #c4d0dd;
+        line-height: 1;
+        text-align: center;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        font-family: inherit;
+      }
+      .dining-meta-inline.show {
+        display: inline-flex;
+      }
+
+      .panel {
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 10px;
+        margin-bottom: 8px;
+        box-shadow: 0 6px 14px rgba(19, 44, 84, 0.07);
+      }
+
+      .menu-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 10px;
+        padding: 10px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background: #fcfdff;
+      }
+      .menu-browser {
+        display: grid;
+        grid-template-columns: minmax(72px, var(--menu-nav-width)) minmax(0, 1fr);
+        gap: 6px;
+        align-items: stretch;
+        height: var(--menu-browser-height);
+      }
+      .menu-categories {
+        display: grid;
+        gap: 6px;
+        align-self: stretch;
+        height: 100%;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior-y: contain;
+      }
+      .menu-cat-btn {
+        border: 1px solid #cdd7e5;
+        background: #f4f7fc;
+        border-radius: 8px;
+        padding: 6px 7px;
+        text-align: left;
+        font-size: 11px;
+        line-height: 1.25;
+        width: 100%;
+        height: 100%;
+        min-height: 34px;
+        display: flex;
+        align-items: center;
+      }
+      .menu-cat-btn.active {
+        background: #2563eb;
+        border-color: #1d4ed8;
+        color: #fff;
+      }
+      .menu-items-pane {
+        min-width: 0;
+        max-height: 100%;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior-y: contain;
+        padding-right: 2px;
+      }
+      .menu-items-pane .menu-item {
+        margin-bottom: 8px;
+        padding: 8px;
+      }
+      .menu-drink-section-head {
+        font-size: 15px;
+        font-weight: 700;
+        color: #334155;
+        padding: 12px 4px 8px;
+        margin-top: 4px;
+        border-bottom: 1px solid #e2e8f0;
+        line-height: 1.25;
+      }
+      .menu-img {
+        width: var(--menu-image-w);
+        height: var(--menu-image-h);
+        object-fit: contain; /* 完整显示整张菜品图，不裁切 */
+        border-radius: 8px;
+        background: #fff; /* 留白底色，匹配菜单图展示 */
+        flex-shrink: 0;
+      }
+      .menu-info {
+        flex-grow: 1;
+        min-width: 0;
+      }
+
+      #menuTitle,
+      #cartTitle {
+        margin-bottom: 8px;
+      }
+
+      #cart {
+        padding-left: 18px;
+        margin: 6px 0 0 0;
+      }
+
+      #cart li {
+        margin-bottom: 4px;
+      }
+
+      .tab-panel {
+        display: none;
+      }
+      .tab-panel.active {
+        display: block;
+      }
+      #tabOrderPanel {
+        overflow: hidden;
+      }
+      #tabCartPanel,
+      #tabOrdersPanel {
+        overflow: auto;
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior-y: contain;
+        max-height: calc(100vh - 220px - env(safe-area-inset-bottom, 0px) - var(--vv-bottom));
+        max-height: calc(
+          100dvh - 220px - env(safe-area-inset-bottom, 0px) - var(--vv-bottom)
+        );
+      }
+
+      .table-tools {
+        margin-bottom: 10px;
+        width: 100%;
+        max-width: 360px;
+      }
+
+      .table-id-select {
+        min-width: 0;
+        min-height: 40px;
+        width: 100%;
+        border: 1px solid #cbd5e1;
+        border-radius: 10px;
+        padding: 8px 10px;
+        background: #fff;
+        font-size: 15px;
+      }
+
+      .table-id-select:focus-visible {
+        outline: 2px solid #2563eb;
+        outline-offset: 1px;
+      }
+
+      .guest-count-input {
+        box-sizing: border-box;
+      }
+
+      .table-shortcuts {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-bottom: 4px;
+      }
+
+      .table-shortcut-btn {
+        border: 1px solid #d1d5db;
+        background: #f8fafc;
+        border-radius: 999px;
+        padding: 4px 10px;
+        min-height: 32px;
+        font-size: 13px;
+      }
+
+      .ui-alert-modal {
+        position: fixed;
+        inset: 0;
+        background: rgba(15, 23, 42, 0.42);
+        backdrop-filter: blur(2px);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: max(18px, env(safe-area-inset-top, 0px)) max(18px, env(safe-area-inset-right, 0px))
+          max(18px, env(safe-area-inset-bottom, 0px)) max(18px, env(safe-area-inset-left, 0px));
+        z-index: 1200;
+      }
+
+      .ui-alert-modal.show {
+        display: flex;
+      }
+
+      .ui-alert-card {
+        width: min(520px, 100%);
+        background: #fff;
+        border: 1px solid #dbe2ea;
+        border-radius: 16px;
+        padding: 16px;
+        max-height: calc(78vh - env(safe-area-inset-bottom, 0px) - env(safe-area-inset-top, 0px));
+        max-height: calc(
+          78dvh - env(safe-area-inset-bottom, 0px) - env(safe-area-inset-top, 0px)
+        );
+        overflow: auto;
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior-y: contain;
+        box-shadow: 0 14px 34px rgba(2, 6, 23, 0.26);
+      }
+
+      .ui-alert-message {
+        margin: 0 0 12px 0;
+        color: #0f172a;
+        line-height: 1.5;
+        white-space: pre-wrap;
+      }
+
+      .ui-alert-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 8px;
+      }
+      .ui-alert-actions button {
+        min-width: 72px;
+        min-height: 38px;
+      }
+      #uiAlertOkBtn {
+        background: #2563eb;
+        border-color: #1d4ed8;
+        color: #fff;
+      }
+      #uiAlertOkBtn:hover {
+        background: #1d4ed8;
+      }
+
+      .ui-alert-cancel {
+        display: none;
+      }
+
+      .ui-alert-cancel.show {
+        display: inline-flex;
+      }
+
+      #order-history-section {
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+        padding: 12px;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+      }
+
+      .order-history-empty {
+        color: #64748b;
+        background: #fff;
+        border: 1px dashed #cbd5e1;
+        border-radius: 10px;
+        padding: 10px;
+        text-align: center;
+        font-size: 13px;
+      }
+
+      .order-history-card {
+        margin-bottom: 10px;
+        padding: 10px 12px;
+        border: 1px solid #d7dee8;
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
+      }
+
+      .order-history-head {
+        font-size: 12px;
+        color: #64748b;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .order-history-items {
+        margin-top: 8px;
+        display: grid;
+        gap: 6px;
+      }
+
+      .order-history-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        line-height: 1.35;
+      }
+
+      .order-history-item-name {
+        color: #0f172a;
+        flex: 1;
+        min-width: 0;
+      }
+
+      .order-history-item-status {
+        font-size: 12px;
+        font-weight: 700;
+        white-space: nowrap;
+      }
+
+      .order-history-item-status.done {
+        color: #15803d;
+      }
+
+      .order-history-item-status.pending {
+        color: #ea580c;
+      }
+
+      .order-history-foot {
+        margin-top: 8px;
+        text-align: right;
+        font-weight: 700;
+      }
+
+      .order-history-foot.done {
+        color: #15803d;
+      }
+
+      .order-history-foot.pending {
+        color: #ea580c;
+      }
+
+      .entry-gate {
+        margin-bottom: 8px;
+      }
+      .entry-title {
+        font-size: 14px;
+        font-weight: 700;
+        margin-bottom: 6px;
+      }
+      .entry-confirm-btn {
+        width: 100%;
+        max-width: 360px;
+        min-height: 42px;
+        background: var(--primary);
+        color: #fff;
+      }
+
+      .tabbar {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: var(--vv-bottom);
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 6px;
+        padding: 6px 10px calc(6px + constant(safe-area-inset-bottom));
+        padding: 6px 10px calc(6px + env(safe-area-inset-bottom, 0px));
+        background: rgba(237, 242, 248, 0.98);
+        border-top: 1px solid #dbe2ea;
+        z-index: 1100;
+        backdrop-filter: blur(4px);
+      }
+      .tabbar button {
+        min-height: 40px;
+        padding: 8px 6px;
+      }
+      .tabbar button.active {
+        background: #2563eb;
+        color: #fff;
+      }
+
+      .floating-bar {
+        position: fixed;
+        left: 10px;
+        right: 10px;
+        bottom: calc(
+          var(--tabbar-stack) + constant(safe-area-inset-bottom) + var(--vv-bottom)
+        );
+        bottom: calc(
+          var(--tabbar-stack) + env(safe-area-inset-bottom, 0px) + var(--vv-bottom)
+        );
+        display: none;
+        z-index: 1090;
+      }
+      .floating-bar.show {
+        display: block;
+      }
+      .cart-submit-bar {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        border-radius: 12px;
+        overflow: hidden;
+        border: 1px solid #ccd8e6;
+        box-shadow: 0 4px 12px rgba(15, 23, 42, 0.1);
+        background: #edf3fa;
+      }
+      .cart-total-chip {
+        background: #21324a;
+        color: #f8fbff;
+        min-height: 46px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 16px;
+        letter-spacing: 0.2px;
+      }
+      #submitOrderBtn {
+        border-radius: 0;
+        min-height: 46px;
+        background: #3f73dd;
+        color: #f9fbff;
+        font-weight: 700;
+        font-size: 16px;
+        border-left: 1px solid rgba(255, 255, 255, 0.35);
+      }
+      #submitOrderBtn:hover {
+        background: #3768cc;
+      }
+      #checkoutFloatingBtn {
+        min-height: 46px;
+        background: #2f9a5d;
+        color: #f9fffb;
+        border-radius: 0;
+        font-weight: 700;
+        font-size: 16px;
+        border-left: 1px solid rgba(255, 255, 255, 0.35);
+      }
+      #checkoutFloatingBtn:hover {
+        background: #2a8a54;
+      }
+      #submitOrderBtn:disabled,
+      #checkoutFloatingBtn:disabled {
+        background: #b8c4d4;
+        color: #f5f7fb;
+        border-left-color: rgba(255, 255, 255, 0.15);
+      }
+
+      .cart-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 0;
+        border-bottom: 1px dashed #e5e7eb;
+      }
+      .cart-row:last-child {
+        border-bottom: 0;
+      }
+      .cart-row-main {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        min-width: 0;
+        flex: 1;
+      }
+      .cart-row-image {
+        width: 64px;
+        height: 44px;
+        object-fit: contain;
+        border-radius: 8px;
+        background: #fff;
+        border: 1px solid #e5e7eb;
+        flex-shrink: 0;
+      }
+      .cart-row-name {
+        min-width: 0;
+      }
+      .cart-row-controls {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        flex-shrink: 0;
+      }
+      .cart-row-controls button {
+        min-width: 30px;
+        min-height: 30px;
+        padding: 0;
+      }
+
+      @media (min-width: 768px) {
+        :root {
+          --menu-nav-width: 122px;
+          --menu-image-w: 140px;
+          --menu-image-h: 88px;
+        }
+        body {
+          max-width: 920px;
+          margin: 0 auto;
+          padding: 16px 16px
+            calc(
+              16px + var(--tabbar-stack) + env(safe-area-inset-bottom, 0px) + var(--vv-bottom)
+            );
+        }
+
+        .menu-browser {
+          grid-template-columns: minmax(112px, 132px) minmax(0, 1fr);
+          gap: 10px;
+        }
+
+        .menu-cat-btn {
+          font-size: 13px;
+          padding: 8px 9px;
+        }
+      }
+
+      @media (max-width: 390px), (max-height: 700px) {
+        :root {
+          --menu-nav-width: 74px;
+          --menu-image-w: 94px;
+          --menu-image-h: 60px;
+        }
+        body {
+          padding: 8px 8px
+            calc(
+              8px + var(--tabbar-stack) + env(safe-area-inset-bottom, 0px) + var(--vv-bottom)
+            );
+        }
+        .panel {
+          padding: 9px;
+        }
+        .menu-categories {
+          height: 100%;
+          grid-auto-rows: 1fr;
+        }
+        .menu-item {
+          gap: 8px;
+          padding: 8px;
+        }
+        .menu-cat-btn {
+          font-size: 11px;
+          min-height: 0;
+          height: 100%;
+          padding: 5px 6px;
+        }
+        .menu-info strong {
+          font-size: 15px;
+          line-height: 1.2;
+        }
+        .menu-info > div:first-child {
+          line-height: 1.2;
+        }
+        .menu-info > div:last-child button {
+          min-height: 32px;
+          padding: 6px 9px;
+          border-radius: 8px;
+        }
+        .menu-info > div:last-child span {
+          min-width: 14px;
+          display: inline-block;
+          text-align: center;
+        }
+        .cart-row-image {
+          width: 58px;
+          height: 40px;
+        }
+        .tabbar {
+          padding: 6px 8px calc(6px + constant(safe-area-inset-bottom));
+          padding: 6px 8px calc(6px + env(safe-area-inset-bottom, 0px));
+        }
+        .floating-bar {
+          left: 8px;
+          right: 8px;
+          bottom: calc(
+            var(--tabbar-stack) + env(safe-area-inset-bottom, 0px) + var(--vv-bottom)
+          );
+        }
+      }
+
+    </style>
+    <script>
+      /* 先于顾客页脚本执行；与 meta app-base-path 一致时从子路径拉取客户端。async=false 尽量早准备好 io */
+      (function loadGuestSocketVendor() {
+        function readGuestAppBasePath() {
+          try {
+            var el = document.querySelector('meta[name="app-base-path"]');
+            var raw = el && el.content ? String(el.content).trim() : "";
+            if (!raw || raw === "/") return "";
+            return "/" + raw.replace(/^\/+|\/+$/g, "").split(/\/+/).filter(Boolean).join("/");
+          } catch (e) {
+            return "";
+          }
+        }
+        var base = readGuestAppBasePath();
+        var src = (base || "") + "/socket.io/socket.io.js";
+        src = src.replace(/\/{2,}/g, "/");
+        var s = document.createElement("script");
+        s.async = false;
+        s.src = src;
+        s.onerror = function () {
+          console.error("[socket.io] 脚本加载失败，请核对 app-base-path 与 nginx 前缀:", src);
+        };
+        document.head.appendChild(s);
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="statusLangRow" class="status-lang-row">
+      <div class="status-lang-top">
+        <div id="businessStatus" class="business-status"></div>
+        <div id="diningMeta" class="dining-meta-inline"></div>
+        <select id="langSelect" class="lang-select">
+          <option value="zh">中文</option>
+          <option value="ja">日本語</option>
+          <option value="en">English</option>
+        </select>
+      </div>
+    </div>
+    <div id="entryGate" class="panel entry-gate">
+      <p id="entryTitle" class="entry-title"></p>
+      <div class="table-tools">
+        <input
+          id="guestCountInput"
+          class="table-id-select guest-count-input"
+          type="number"
+          inputmode="numeric"
+          min="1"
+          max="99"
+        />
+      </div>
+      <div class="table-tools">
+        <select id="tableIdSelect" class="table-id-select"></select>
+      </div>
+      <div id="tableShortcuts" class="table-shortcuts"></div>
+      <button id="enterOrderingBtn" class="entry-confirm-btn" type="button"></button>
+    </div>
+
+    <div id="tabOrderPanel" class="panel tab-panel active">
+      <h1 id="menuTitle"></h1>
+      <div id="menu"></div>
+    </div>
+
+    <div id="tabCartPanel" class="panel tab-panel">
+      <h2 id="cartTitle"></h2>
+      <div id="cart"></div>
+    </div>
+
+    <div id="tabOrdersPanel" class="panel tab-panel">
+      <div id="order-history-section">
+        <h3 id="myOrdersTitle"></h3>
+        <div id="my-orders">
+          <p id="emptyOrdersText" style="color: gray"></p>
+        </div>
+      </div>
+    </div>
+
+    <div id="cartActionBar" class="floating-bar">
+      <div class="cart-submit-bar">
+        <div id="cartTotalAmount" class="cart-total-chip">¥0</div>
+        <button id="submitOrderBtn" type="button" onclick="submitOrder()"></button>
+      </div>
+    </div>
+
+    <div id="ordersActionBar" class="floating-bar">
+      <div class="cart-submit-bar">
+        <div id="ordersTotalAmount" class="cart-total-chip">¥0</div>
+        <button id="checkoutFloatingBtn" type="button" onclick="requestCheckout()"></button>
+      </div>
+    </div>
+
+    <div class="tabbar">
+      <button id="tabOrderBtn" type="button"></button>
+      <button id="tabCartBtn" type="button"></button>
+      <button id="tabOrdersBtn" type="button"></button>
+    </div>
+    <div id="uiAlertModal" class="ui-alert-modal">
+      <div class="ui-alert-card">
+        <p id="uiAlertMessage" class="ui-alert-message"></p>
+        <div class="ui-alert-actions">
+          <button id="uiAlertCancelBtn" class="ui-alert-cancel" type="button"></button>
+          <button id="uiAlertOkBtn" type="button"></button>
+        </div>
+      </div>
+    </div>
+    <script>
+      function installStyledAlert() {
+        const modal = document.getElementById("uiAlertModal");
+        const messageEl = document.getElementById("uiAlertMessage");
+        const okBtn = document.getElementById("uiAlertOkBtn");
+        const cancelBtn = document.getElementById("uiAlertCancelBtn");
+        if (!modal || !messageEl || !okBtn || !cancelBtn) return;
+        let resolver = null;
+        let confirmMode = false;
+        const close = (result) => {
+          modal.classList.remove("show");
+          cancelBtn.classList.remove("show");
+          if (resolver) {
+            const fn = resolver;
+            resolver = null;
+            fn(result);
+          }
+        };
+        window.alert = (message) => {
+          confirmMode = false;
+          messageEl.textContent = String(message ?? "");
+          cancelBtn.classList.remove("show");
+          modal.classList.add("show");
+          okBtn.focus();
+        };
+        window.uiConfirm = (message) =>
+          new Promise((resolve) => {
+            resolver = resolve;
+            confirmMode = true;
+            messageEl.textContent = String(message ?? "");
+            cancelBtn.classList.add("show");
+            modal.classList.add("show");
+            okBtn.focus();
+          });
+        okBtn.addEventListener("click", () => close(true));
+        cancelBtn.addEventListener("click", () => close(false));
+        modal.addEventListener("click", (event) => {
+          if (event.target === modal) close(!confirmMode);
+        });
+      }
+
+      installStyledAlert();
+
+      // 🌍 多语言文本
+      const text = {
+        zh: {
+          entryTitle: "请先输入用餐人数和桌号",
+          confirmEntry: "确认并进入点单",
+          menu: "菜单",
+          cart: "购物车",
+          tabOrder: "点单",
+          tabCart: "购物车",
+          tabOrders: "订单",
+          total: "总价",
+          submit: "下单",
+          checkout: "结账",
+          empty: "请先选择商品",
+          success: "下单成功！",
+          table: "桌号",
+          myOrders: "📋 我的订单 (已下单)",
+          noOrders: "暂无下单记录",
+          fetchOrderFail: "无法获取订单信息",
+          pendingConfirm: "您还有以下菜品正在准备中：\n\n{items}\n\n是否确认现在结账？",
+          checkoutNotified: "已通知服务员结账，请稍后...",
+          checkoutFail: "结账请求失败，请稍后再试",
+          noCheckoutContent: "未有结账内容",
+          businessOpen: "正在营业",
+          businessClosed: "停止营业",
+          businessClosedAction: "当前停止营业，暂时无法点单和结账",
+          statusPreparing: "🔥 部分/全部制作中",
+          statusAllDone: "✅ 已全部上菜",
+          itemDone: "已上菜",
+          itemPending: "待出菜",
+          orderNo: "编号",
+          tablePickerHint: "请选择当前桌台编号（仅店内登记的桌位可选）。",
+          tableSelectPlaceholder: "请选择桌号",
+          guestCount: "人数",
+          guestCountPlaceholder: "请输入用餐人数（例如 2）",
+          orderRejected: "下单失败，请检查桌号或网络后重试。",
+          orderDbBusy: "系统繁忙，请稍后重试。",
+          orderServerConfig: "系统配置异常，请联系店员处理。",
+          orderServerError: "系统异常，请联系店员处理。",
+          tableInputPlaceholder: "手动输入桌号（例如 T12）",
+          setTableBtn: "设置桌号",
+          invalidTableId: "该桌号不可用，请从列表中选择。",
+          orderMenuStale: "部分菜品已变更或下架，请刷新页面后重新选菜。",
+          emptyTableId: "请选择桌号",
+          emptyGuestCount: "请输入人数",
+          diningMeta: "桌号 {table} · 人数 {count}",
+          changeTableConfirm: "当前购物车有未提交菜品，切换桌号会清空购物车。是否继续？",
+          uiOk: "确定",
+          uiCancel: "取消",
+          unnamedDish: "（未命名菜品）",
+          langOptZh: "中文",
+          langOptJa: "日本語",
+          langOptEn: "English",
+        },
+        ja: {
+          entryTitle: "ご利用人数とテーブル番号を入力してください",
+          confirmEntry: "確認して注文へ進む",
+          menu: "メニュー",
+          cart: "カート",
+          tabOrder: "注文",
+          tabCart: "カート",
+          tabOrders: "注文履歴",
+          total: "合計",
+          submit: "注文する",
+          checkout: "会計する",
+          empty: "商品を選択してください",
+          success: "注文しました。",
+          table: "テーブル",
+          myOrders: "📋 注文履歴",
+          noOrders: "注文履歴はありません",
+          fetchOrderFail: "注文情報を取得できません",
+          pendingConfirm: "以下の料理がまだ準備中です:\n\n{items}\n\nこのまま会計しますか？",
+          checkoutNotified: "スタッフに会計を通知しました。しばらくお待ちください。",
+          checkoutFail: "会計リクエストに失敗しました。しばらくして再試行してください。",
+          noCheckoutContent: "会計できる内容がありません",
+          businessOpen: "営業中",
+          businessClosed: "停止営業",
+          businessClosedAction: "現在は停止営業中のため、注文・会計はできません",
+          statusPreparing: "🔥 一部/全部 準備中",
+          statusAllDone: "✅ すべて提供済み",
+          itemDone: "提供済み",
+          itemPending: "未提供",
+          orderNo: "番号",
+          tablePickerHint: "現在お座りのテーブルを一覧から選んでください（登録済みのみ）。",
+          tableSelectPlaceholder: "テーブルを選択してください",
+          guestCount: "人数",
+          guestCountPlaceholder: "ご利用人数を入力してください（例: 2）",
+          orderRejected: "注文に失敗しました。テーブル番号か通信を確認してください。",
+          orderDbBusy: "システムが混み合っています。少し待ってから再試行してください。",
+          orderServerConfig: "システム設定に問題があります。スタッフへ連絡してください。",
+          orderServerError: "システム異常です。スタッフへ連絡してください。",
+          tableInputPlaceholder: "手動でテーブル番号を入力（例: T12）",
+          setTableBtn: "テーブル設定",
+          invalidTableId: "このテーブル番号は使用できません。一覧から選んでください。",
+          orderMenuStale: "メニューが更新されたか、一部商品は提供できません。ページを再読み込みして選び直してください。",
+          emptyTableId: "テーブルを選択してください",
+          emptyGuestCount: "人数を入力してください",
+          diningMeta: "テーブル {table} ・ 人数 {count}",
+          changeTableConfirm: "未送信のカート内容があります。テーブル変更するとカートはクリアされます。続行しますか？",
+          uiOk: "確定",
+          uiCancel: "キャンセル",
+          unnamedDish: "（名称未設定の料理）",
+          langOptZh: "中文",
+          langOptJa: "日本語",
+          langOptEn: "English",
+        },
+        en: {
+          entryTitle: "Please enter guests and table first",
+          confirmEntry: "Confirm and start ordering",
+          menu: "Menu",
+          cart: "Cart",
+          tabOrder: "Order",
+          tabCart: "Cart",
+          tabOrders: "Orders",
+          total: "Total",
+          submit: "Order",
+          checkout: "Checkout",
+          empty: "Please select items",
+          success: "Order successful!",
+          table: "Table",
+          myOrders: "📋 My Orders",
+          noOrders: "No order records",
+          fetchOrderFail: "Failed to get order information",
+          pendingConfirm: "The following items are still being prepared:\n\n{items}\n\nDo you want to checkout now?",
+          checkoutNotified: "The staff has been notified for checkout. Please wait.",
+          checkoutFail: "Checkout request failed. Please try again later.",
+          noCheckoutContent: "There is no order to checkout",
+          businessOpen: "Open",
+          businessClosed: "Closed",
+          businessClosedAction: "The store is currently closed. Ordering and checkout are disabled.",
+          statusPreparing: "🔥 Partially/Fully Preparing",
+          statusAllDone: "✅ All Served",
+          itemDone: "Served",
+          itemPending: "Pending",
+          orderNo: "Order No",
+          tablePickerHint: "Choose your table from the list (registered tables only).",
+          tableSelectPlaceholder: "Select table",
+          guestCount: "Guests",
+          guestCountPlaceholder: "Enter number of guests (e.g. 2)",
+          orderRejected: "Order failed. Check table selection or connection.",
+          orderDbBusy: "System is busy. Please try again shortly.",
+          orderServerConfig: "System configuration issue. Please contact staff.",
+          orderServerError: "System error. Please contact staff.",
+          tableInputPlaceholder: "Enter table number manually (e.g. T12)",
+          setTableBtn: "Set Table",
+          invalidTableId: "Invalid table. Please choose from the list.",
+          orderMenuStale: "Some items changed or are unavailable. Refresh the page and pick again.",
+          emptyTableId: "Please select a table",
+          emptyGuestCount: "Please enter number of guests",
+          diningMeta: "Table {table} · Guests {count}",
+          changeTableConfirm: "There are unsubmitted items in cart. Switching table will clear the cart. Continue?",
+          uiOk: "OK",
+          uiCancel: "Cancel",
+          unnamedDish: "(Unnamed item)",
+          langOptZh: "Chinese",
+          langOptJa: "Japanese",
+          langOptEn: "English",
+        },
+      };
+
+      function t(key) {
+        return text[currentLang][key] || text.ja[key] || key;
+      }
+
+      function dishDisplayName(item) {
+        const o = item?.name;
+        if (!o || typeof o !== "object") return t("unnamedDish");
+        return o[currentLang] || o.en || o.ja || o.zh || t("unnamedDish");
+      }
+
+      function formatPriceYen(price) {
+        const n = Number(price);
+        const safe = Number.isFinite(n) ? n : 0;
+        if (currentLang === "en") return `¥${safe.toLocaleString("en-US")}`;
+        const loc = currentLang === "zh" ? "zh-CN" : "ja-JP";
+        return `${safe.toLocaleString(loc)}円`;
+      }
+
+      function toLocalizedOrderError(message, context = {}) {
+        const msg = String(message || "");
+        const code = String(context.errorCode || "").trim();
+        const status = Number(context.status) || 0;
+        if (code === "ORDER_DB_BUSY") return t("orderDbBusy");
+        if (code === "ORDER_SQLITE_VERSION" || code === "ORDER_DB_ERROR") return t("orderServerConfig");
+        if (code === "ORDER_INTERNAL") return t("orderServerError");
+        if (msg.includes("门店未营业")) return t("businessClosedAction");
+        if (msg.includes("无效桌号")) return t("invalidTableId");
+        if (msg.includes("无效人数")) return t("emptyGuestCount");
+        if (msg.includes("部分菜品不存在") || msg.includes("已下架")) return t("orderMenuStale");
+        if (msg.includes("订单不能为空") || msg.includes("订单数据无效")) return t("empty");
+        if (msg.includes("数据库版本不兼容") || msg.includes("数据库异常")) return t("orderServerConfig");
+        if (msg.includes("系统繁忙")) return t("orderDbBusy");
+        const lower = msg.toLowerCase();
+        if (lower.includes("store closed") || lower.includes("business closed") || lower.includes("not open"))
+          return t("businessClosedAction");
+        if (lower.includes("invalid table")) return t("invalidTableId");
+        if (lower.includes("invalid guest")) return t("emptyGuestCount");
+        if (lower.includes("unavailable") && lower.includes("item")) return t("orderMenuStale");
+        if (lower.includes("database") && lower.includes("busy")) return t("orderDbBusy");
+        if (lower.includes("sqlite") || lower.includes("database")) return t("orderServerConfig");
+        if (lower.includes("empty order") || lower.includes("invalid order")) return t("empty");
+        if (status >= 500) return t("orderServerError");
+        return t("orderRejected");
+      }
+
+      function escapeHtml(value) {
+        return String(value)
+          .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;")
+          .replaceAll('"', "&quot;")
+          .replaceAll("'", "&#39;");
+      }
+
+      // 🌐 当前语言
+      let currentLang = localStorage.getItem("lang") || "ja";
+      const RECENT_TABLES_KEY = "recentTableIds";
+
+      /** 与 <meta name="app-base-path"> 对齐；挂载在反代子路径时请填写，例如 content="/shop"。 */
+      function readAppBasePath() {
+        try {
+          const el = document.querySelector('meta[name="app-base-path"]');
+          const raw = el && typeof el.content === "string" ? el.content.trim() : "";
+          if (!raw || raw === "/") return "";
+          const trimmed = "/" + raw.replace(/^\/+|\/+$/g, "").split(/\/+/).filter(Boolean).join("/");
+          return trimmed === "/" ? "" : trimmed;
+        } catch (_) {
+          return "";
+        }
+      }
+
+      function appUrl(relPath) {
+        const raw = typeof relPath === "string" ? relPath : "";
+        const p = raw.startsWith("/") ? raw : `/${raw}`;
+        const base = readAppBasePath();
+        if (!base) return p;
+        return `${base}${p}`.replace(/\/{2,}/g, "/");
+      }
+
+      function setLang(lang) {
+        currentLang = lang;
+        localStorage.setItem("lang", lang);
+        renderText();
+        renderTableSelect();
+        renderMenu();
+        renderCart();
+        // 语言切换时同步刷新“我的订单”区域文案，避免只改顶部不改内容
+        loadMyOrders();
+      }
+
+      // 🪑 桌号（由 /api/tables 白名单决定，不可随意输入）
+      function getTableIdFromURL() {
+        const params = new URLSearchParams(window.location.search);
+        return params.get("tableId");
+      }
+
+      function getQuickGuestCountFromURL() {
+        const params = new URLSearchParams(window.location.search);
+        return params.get("guestCount");
+      }
+
+      function shouldAutoEnterFromURL() {
+        const params = new URLSearchParams(window.location.search);
+        return params.get("autostart") === "1";
+      }
+
+      function getOrderModeFromURL() {
+        const params = new URLSearchParams(window.location.search);
+        return String(params.get("mode") || "").trim().toLowerCase();
+      }
+
+      let tableId = "";
+      let guestCount = "";
+      let allowedTableIds = [];
+      let orderingReady = false;
+      let activeTab = "order";
+
+      // 🍜 菜单
+      // --- index.html 脚本部分 ---
+      let menu = []; // 改为空数组，等待加载
+      let orderRefreshTimer = null;
+      let myOrdersLoading = false;
+      let guestSocket = null;
+      let activeCategoryKey = "";
+      let hasCheckoutableOrders = false;
+      let businessOpen = false;
+      const CATEGORY_ORDER = [
+        "cold_dish",
+        "street_food",
+        "dim_sum_rice",
+        "grilled_fried",
+        "casserole",
+        "noodles",
+        "drink_soft",
+        "drink_liquor",
+      ];
+      const CATEGORY_TEXT = {
+        zh: {
+          cold_dish: "前菜",
+          street_food: "屋台",
+          dim_sum_rice: "点心・饭类",
+          grilled_fried: "串烧 & 炸物",
+          casserole: "锅类",
+          noodles: "面类",
+          drink_soft: "饮料・汽水",
+          drink_liquor: "酒水",
+        },
+        ja: {
+          cold_dish: "前菜",
+          street_food: "屋台",
+          dim_sum_rice: "点心・飯類",
+          grilled_fried: "串焼き & 揚げ物",
+          casserole: "鍋類",
+          noodles: "麺類",
+          drink_soft: "ソフトドリンク",
+          drink_liquor: "お酒",
+        },
+        en: {
+          cold_dish: "Cold Dish",
+          street_food: "Street Food",
+          dim_sum_rice: "Dim Sum & Rice",
+          grilled_fried: "Grilled Skewers & Fried Foods",
+          casserole: "Casserole",
+          noodles: "Noodles",
+          drink_soft: "Soft Drinks",
+          drink_liquor: "Alcohol",
+        },
+      };
+
+      /** 酒水 tab 内分组顺序（与菜单印刷一致） */
+      const DRINK_LIQUOR_SECTION_ORDER = [
+        "highball",
+        "shochu",
+        "nihonshu",
+        "sour",
+        "beer",
+        "shaoxing",
+      ];
+      const DRINK_SECTION_LABEL = {
+        zh: {
+          highball: "威士忌嗨棒（嗨棒）",
+          shochu: "烧酒",
+          nihonshu: "清酒（日本酒）",
+          sour: "沙哇",
+          beer: "啤酒",
+          shaoxing: "绍兴酒",
+        },
+        ja: {
+          highball: "ハイボール（ウイスキー）",
+          shochu: "焼酎",
+          nihonshu: "日本酒",
+          sour: "サワー",
+          beer: "ビール",
+          shaoxing: "紹興酒",
+        },
+        en: {
+          highball: "Highball (Whiskey)",
+          shochu: "Shochu",
+          nihonshu: "Japanese sake",
+          sour: "Chūhai / Sour",
+          beer: "Beer",
+          shaoxing: "Shaoxing wine",
+        },
+      };
+
+      function normalizeCategory(rawCategory) {
+        const value = String(rawCategory || "")
+          .trim()
+          .toLowerCase()
+          .replace(/[・&]/g, " ")
+          .replace(/\s+/g, " ");
+        const compact = value.replace(/\s+/g, "");
+
+        if (
+          compact === "cold_dish" ||
+          compact === "colddish" ||
+          compact === "appetizer" ||
+          compact === "appetizers" ||
+          compact === "前菜"
+        ) {
+          return "cold_dish";
+        }
+        if (
+          compact === "street_food" ||
+          compact === "streetfood" ||
+          compact === "yatai" ||
+          compact === "屋台"
+        ) {
+          return "street_food";
+        }
+        if (
+          compact === "dim_sum_rice" ||
+          compact === "dimsumrice" ||
+          compact === "dimsum" ||
+          compact === "rice" ||
+          compact === "点心飯類" ||
+          compact === "点心饭类"
+        ) {
+          return "dim_sum_rice";
+        }
+        if (
+          compact === "grilled_fried" ||
+          compact === "grilledskewersfriedfoods" ||
+          compact === "grilledfried" ||
+          compact === "skewersfried" ||
+          compact === "串焼き揚げ物" ||
+          compact === "串烧炸物"
+        ) {
+          return "grilled_fried";
+        }
+        if (compact === "casserole" || compact === "pot" || compact === "鍋類" || compact === "锅类") {
+          return "casserole";
+        }
+        if (compact === "noodles" || compact === "noodle" || compact === "麺類" || compact === "面类") {
+          return "noodles";
+        }
+        if (
+          compact === "drink_soft" ||
+          compact === "drinksoft" ||
+          compact === "soft_drink" ||
+          compact === "softdrink" ||
+          compact === "ソフトドリンク" ||
+          compact === "饮料汽水" ||
+          compact === "飲料汽水" ||
+          compact === "饮料" ||
+          compact === "飲料"
+        ) {
+          return "drink_soft";
+        }
+        if (
+          compact === "drink_liquor" ||
+          compact === "drinkliquor" ||
+          compact === "liquor" ||
+          compact === "alcohol" ||
+          compact === "酒水" ||
+          compact === "酒類" ||
+          compact === "酒类" ||
+          compact === "お酒" ||
+          compact === "winebeer"
+        ) {
+          return "drink_liquor";
+        }
+        /* 旧数据 category=drink：默认归入酒水（与本店啤酒等一致） */
+        if (compact === "drink" || compact === "drinks") {
+          return "drink_liquor";
+        }
+        if (compact === "beverage" || compact === "beverages") {
+          return "drink_soft";
+        }
+        return "other";
+      }
+
+      // 2. 新增加载菜单的函数
+      async function loadMenu() {
+        try {
+          const res = await fetch(appUrl("/api/menu"), { cache: "no-store" });
+          menu = await res.json();
+          renderMenu(); // 加载完数据后渲染
+        } catch (err) {
+          console.error("加载菜单失败:", err);
+        }
+      }
+
+      async function loadAllowedTables() {
+        try {
+          const res = await fetch(appUrl("/api/tables"));
+          if (!res.ok) throw new Error("tables-fail");
+          const data = await res.json();
+          allowedTableIds = Array.isArray(data.tables) ? data.tables : [];
+        } catch (err) {
+          console.error("加载桌号列表失败:", err);
+          allowedTableIds = ["1A", "1B", "1C", "2A", "2B", "2C", "3A", "3B", "3C", "T"];
+        }
+        if (!allowedTableIds.length) {
+          allowedTableIds = ["1A", "1B", "1C", "2A", "2B", "2C", "3A", "3B", "3C", "T"];
+        }
+        pickInitialTableId();
+        renderTableSelect();
+        if (tableId) localStorage.setItem("tableId", tableId);
+      }
+
+      function pickInitialTableId() {
+        const fromUrl = getTableIdFromURL();
+        for (const c of [fromUrl]) {
+          if (!c || c === "null") continue;
+          const v = String(c).trim();
+          if (allowedTableIds.includes(v)) {
+            tableId = v;
+            return;
+          }
+        }
+        tableId = "";
+      }
+
+      function renderTableSelect() {
+        const sel = document.getElementById("tableIdSelect");
+        if (!sel) return;
+        sel.innerHTML = "";
+        const placeholder = document.createElement("option");
+        placeholder.value = "";
+        placeholder.textContent = t("tableSelectPlaceholder");
+        sel.appendChild(placeholder);
+        allowedTableIds.forEach((id) => {
+          const opt = document.createElement("option");
+          opt.value = id;
+          opt.textContent = id;
+          sel.appendChild(opt);
+        });
+        sel.value = allowedTableIds.includes(tableId) ? tableId : "";
+        sel.onchange = () => {
+          applyTableId(sel.value).catch((err) => alert(err.message));
+        };
+      }
+
+      let cart = [];
+      let menuItemsScrollTop = 0;
+
+      function getQuantity(item) {
+        const cartItem = cart.find((i) => i.id === item.id);
+        return cartItem ? cartItem.quantity : 0;
+      }
+
+      function renderText() {
+        document.documentElement.lang = currentLang;
+        const langSelect = document.getElementById("langSelect");
+        if (langSelect && langSelect.value !== currentLang) {
+          langSelect.value = currentLang;
+        }
+        if (langSelect) {
+          const optZh = langSelect.querySelector('option[value="zh"]');
+          const optJa = langSelect.querySelector('option[value="ja"]');
+          const optEn = langSelect.querySelector('option[value="en"]');
+          if (optZh) optZh.textContent = t("langOptZh");
+          if (optJa) optJa.textContent = t("langOptJa");
+          if (optEn) optEn.textContent = t("langOptEn");
+        }
+        document.getElementById("menuTitle").innerText = t("menu");
+        document.getElementById("cartTitle").innerText = t("cart");
+        document.getElementById("myOrdersTitle").innerText = t("myOrders");
+        document.getElementById("entryTitle").innerText = t("entryTitle");
+        document.getElementById("enterOrderingBtn").innerText = t("confirmEntry");
+        document.getElementById("submitOrderBtn").innerText = t("submit");
+        document.getElementById("checkoutFloatingBtn").innerText = t("checkout");
+        document.getElementById("tabOrderBtn").innerText = t("tabOrder");
+        document.getElementById("tabCartBtn").innerText = t("tabCart");
+        document.getElementById("tabOrdersBtn").innerText = t("tabOrders");
+        const guestCountInput = document.getElementById("guestCountInput");
+        if (guestCountInput) {
+          guestCountInput.placeholder = t("guestCountPlaceholder");
+          guestCountInput.setAttribute("aria-label", t("guestCount"));
+        }
+        document.getElementById("uiAlertOkBtn").innerText = t("uiOk");
+        document.getElementById("uiAlertCancelBtn").innerText = t("uiCancel");
+        const emptyOrdersText = document.getElementById("emptyOrdersText");
+        if (emptyOrdersText) {
+          emptyOrdersText.innerText = t("noOrders");
+        }
+        renderBusinessStatus();
+        renderDiningMeta();
+        renderRecentTableButtons();
+        updateTabVisibility();
+        updateCheckoutButtonState();
+      }
+
+      function normalizeGuestCount(raw) {
+        const trimmed = String(raw ?? "").trim();
+        if (!trimmed) return "";
+        const value = Number(trimmed);
+        if (!Number.isInteger(value) || value <= 0) return "";
+        return String(Math.min(value, 99));
+      }
+
+      function setGuestCount(nextRaw) {
+        guestCount = normalizeGuestCount(nextRaw);
+        const input = document.getElementById("guestCountInput");
+        if (input && input.value !== guestCount) {
+          input.value = guestCount;
+        }
+        updateCheckoutButtonState();
+      }
+
+      function setupGuestCountInput() {
+        const input = document.getElementById("guestCountInput");
+        if (!input) return;
+        input.value = guestCount;
+        input.addEventListener("input", () => {
+          setGuestCount(input.value);
+        });
+        input.addEventListener("blur", () => {
+          setGuestCount(input.value);
+        });
+      }
+
+      function renderDiningMeta() {
+        const el = document.getElementById("diningMeta");
+        if (!el) return;
+        if (!orderingReady || !tableId || !guestCount) {
+          el.classList.remove("show");
+          el.textContent = "";
+          return;
+        }
+        el.classList.add("show");
+        el.textContent = t("diningMeta")
+          .replace("{table}", tableId)
+          .replace("{count}", guestCount);
+      }
+
+      function setActiveTab(nextTab) {
+        activeTab = ["order", "cart", "orders"].includes(nextTab) ? nextTab : "order";
+        updateTabVisibility();
+        updateCheckoutButtonState();
+        if (activeTab === "order") scheduleMenuViewportLayoutSync();
+      }
+
+      function updateTabVisibility() {
+        const showMain = orderingReady;
+        const gate = document.getElementById("entryGate");
+        const tabBar = document.querySelector(".tabbar");
+        const statusRow = document.getElementById("statusLangRow");
+        const panels = {
+          order: document.getElementById("tabOrderPanel"),
+          cart: document.getElementById("tabCartPanel"),
+          orders: document.getElementById("tabOrdersPanel"),
+        };
+        if (gate) gate.style.display = showMain ? "none" : "block";
+        if (tabBar) tabBar.style.display = showMain ? "grid" : "none";
+        if (statusRow) statusRow.classList.toggle("ordering-ready", showMain);
+        Object.entries(panels).forEach(([key, panel]) => {
+          if (!panel) return;
+          panel.classList.toggle("active", showMain && activeTab === key);
+        });
+        const cartBar = document.getElementById("cartActionBar");
+        const ordersBar = document.getElementById("ordersActionBar");
+        if (cartBar) cartBar.classList.toggle("show", showMain && activeTab === "cart");
+        if (ordersBar) ordersBar.classList.toggle("show", showMain && activeTab === "orders");
+
+        const tabOrderBtn = document.getElementById("tabOrderBtn");
+        const tabCartBtn = document.getElementById("tabCartBtn");
+        const tabOrdersBtn = document.getElementById("tabOrdersBtn");
+        if (tabOrderBtn) tabOrderBtn.classList.toggle("active", activeTab === "order");
+        if (tabCartBtn) tabCartBtn.classList.toggle("active", activeTab === "cart");
+        if (tabOrdersBtn) tabOrdersBtn.classList.toggle("active", activeTab === "orders");
+      }
+
+      async function confirmDiningInfo() {
+        const nextTable = String(document.getElementById("tableIdSelect")?.value || "").trim();
+        const nextGuest = normalizeGuestCount(document.getElementById("guestCountInput")?.value || "");
+        if (!nextGuest) {
+          alert(t("emptyGuestCount"));
+          return;
+        }
+        setGuestCount(nextGuest);
+        await applyTableId(nextTable);
+        if (!tableId) return;
+        orderingReady = true;
+        setupGuestSocket();
+        loadMyOrders();
+        setActiveTab("order");
+        renderDiningMeta();
+      }
+
+      async function tryAutoEnterFromURL() {
+        if (!shouldAutoEnterFromURL()) return;
+        const nextTable = String(getTableIdFromURL() || "").trim();
+        const mode = getOrderModeFromURL();
+        const fromUrlGuest = normalizeGuestCount(getQuickGuestCountFromURL() || "");
+        const nextGuest = fromUrlGuest || (mode === "append" ? "1" : "");
+        if (!nextTable || !nextGuest) return;
+        await applyTableId(nextTable);
+        if (!tableId) return;
+        setGuestCount(nextGuest);
+        orderingReady = true;
+        setupGuestSocket();
+        loadMyOrders();
+        setActiveTab("order");
+        renderDiningMeta();
+      }
+
+      function renderBusinessStatus() {
+        const el = document.getElementById("businessStatus");
+        const row = document.getElementById("statusLangRow");
+        if (!el) return;
+        el.innerText = businessOpen ? t("businessOpen") : t("businessClosed");
+        if (row) row.classList.toggle("open", businessOpen);
+      }
+
+      async function refreshBusinessStatus() {
+        const res = await fetch(appUrl("/business/status"));
+        if (!res.ok) throw new Error("business-status-failed");
+        const data = await res.json();
+        businessOpen = !!data.isOpen;
+        renderBusinessStatus();
+        updateCheckoutButtonState();
+        renderMenu();
+      }
+
+      function getRecentTableIds() {
+        try {
+          const raw = localStorage.getItem(RECENT_TABLES_KEY);
+          const parsed = JSON.parse(raw || "[]");
+          return Array.isArray(parsed)
+            ? parsed.filter((id) => typeof id === "string" && id.trim())
+            : [];
+        } catch (e) {
+          return [];
+        }
+      }
+
+      function saveRecentTableId(id) {
+        const normalized = String(id || "").trim();
+        if (!normalized) return;
+        const next = [normalized, ...getRecentTableIds().filter((v) => v !== normalized)].slice(
+          0,
+          8,
+        );
+        localStorage.setItem(RECENT_TABLES_KEY, JSON.stringify(next));
+      }
+
+      function renderRecentTableButtons() {
+        const box = document.getElementById("tableShortcuts");
+        if (!box) return;
+        box.innerHTML = "";
+        const ids = getRecentTableIds().filter((id) => allowedTableIds.includes(id));
+        ids.forEach((id) => {
+          const btn = document.createElement("button");
+          btn.className = "table-shortcut-btn";
+          btn.textContent = id;
+          btn.onclick = () => {
+            applyTableId(id).catch((err) => alert(err.message));
+          };
+          box.appendChild(btn);
+        });
+      }
+
+      async function applyTableId(nextTableIdRaw) {
+        const nextTableId = String(nextTableIdRaw || "").trim();
+        if (!nextTableId) {
+          tableId = "";
+          localStorage.removeItem("tableId");
+          updateCheckoutButtonState();
+          return;
+        }
+        if (!allowedTableIds.includes(nextTableId)) {
+          alert(t("invalidTableId"));
+          const sel = document.getElementById("tableIdSelect");
+          if (sel && allowedTableIds.includes(tableId)) sel.value = tableId;
+          return;
+        }
+        if (cart.length > 0) {
+          const confirmed = await window.uiConfirm(t("changeTableConfirm"));
+          if (!confirmed) {
+            const sel = document.getElementById("tableIdSelect");
+            if (sel) sel.value = tableId;
+            return;
+          }
+          cart = [];
+          renderCart();
+          renderMenu();
+        }
+        tableId = nextTableId;
+        localStorage.setItem("tableId", tableId);
+        saveRecentTableId(tableId);
+        const sel = document.getElementById("tableIdSelect");
+        if (sel) sel.value = tableId;
+        renderRecentTableButtons();
+        if (orderingReady) {
+          setupGuestSocket();
+          loadMyOrders();
+        }
+        renderDiningMeta();
+      }
+
+      function updateCheckoutButtonState() {
+        const submitBtn = document.getElementById("submitOrderBtn");
+        if (submitBtn) {
+          const canSubmit = orderingReady && businessOpen && !!tableId && !!guestCount;
+          submitBtn.disabled = !canSubmit;
+          submitBtn.title = !orderingReady
+            ? t("confirmEntry")
+            : !businessOpen
+            ? t("businessClosedAction")
+            : !tableId
+            ? t("emptyTableId")
+            : !guestCount
+            ? t("emptyGuestCount")
+            : "";
+        }
+        const checkoutBtn = document.getElementById("checkoutFloatingBtn");
+        if (!checkoutBtn) return;
+        const enabled = orderingReady && businessOpen && !!tableId && hasCheckoutableOrders;
+        checkoutBtn.disabled = !enabled;
+        checkoutBtn.title = !orderingReady
+          ? t("confirmEntry")
+          : businessOpen
+          ? !tableId
+            ? t("emptyTableId")
+            : hasCheckoutableOrders
+            ? ""
+            : t("noCheckoutContent")
+          : t("businessClosedAction");
+      }
+
+      function renderMenu() {
+        const menuDiv = document.getElementById("menu");
+        const prevItemsPane = menuDiv.querySelector(".menu-items-pane");
+        if (prevItemsPane) {
+          menuItemsScrollTop = prevItemsPane.scrollTop;
+        }
+        menuDiv.innerHTML = "";
+
+        const grouped = {};
+        menu.forEach((item) => {
+          const key = normalizeCategory(item.category);
+          if (!grouped[key]) grouped[key] = [];
+          grouped[key].push(item);
+        });
+
+        // 兼容当前测试数据：若还没有任何可识别分类，就把现有菜单复制到每个分类，方便立刻预览分组效果
+        const hasRecognizedCategory = CATEGORY_ORDER.some(
+          (key) => (grouped[key] || []).length > 0,
+        );
+        if (!hasRecognizedCategory && menu.length > 0) {
+          CATEGORY_ORDER.forEach((key) => {
+            grouped[key] = [...menu];
+          });
+        }
+
+        Object.keys(grouped).forEach((key) => {
+          const bucket = grouped[key];
+          if (!Array.isArray(bucket) || bucket.length <= 1) return;
+          bucket.sort((a, b) => Number(a.id) - Number(b.id));
+        });
+
+        const orderedKeys = CATEGORY_ORDER.filter((key) => grouped[key]?.length > 0);
+        if (orderedKeys.length === 0) return;
+
+        if (!activeCategoryKey || !orderedKeys.includes(activeCategoryKey)) {
+          activeCategoryKey = orderedKeys[0];
+        }
+
+        const browser = document.createElement("div");
+        browser.className = "menu-browser";
+
+        const categoriesCol = document.createElement("div");
+        categoriesCol.className = "menu-categories";
+        categoriesCol.style.gridTemplateRows = `repeat(${orderedKeys.length}, minmax(0, 1fr))`;
+        orderedKeys.forEach((key) => {
+          const catBtn = document.createElement("button");
+          catBtn.className =
+            key === activeCategoryKey ? "menu-cat-btn active" : "menu-cat-btn";
+          catBtn.textContent = CATEGORY_TEXT[currentLang][key] || CATEGORY_TEXT.ja[key];
+          catBtn.onclick = () => {
+            activeCategoryKey = key;
+            menuItemsScrollTop = 0;
+            renderMenu();
+          };
+          categoriesCol.appendChild(catBtn);
+        });
+
+        const itemsPane = document.createElement("div");
+        itemsPane.className = "menu-items-pane";
+        itemsPane.addEventListener("scroll", () => {
+          menuItemsScrollTop = itemsPane.scrollTop;
+        });
+
+        function appendMenuItemRow(item) {
+          const row = document.createElement("div");
+          row.className = "menu-item"; // 使用 flex 布局
+          const hasImage = typeof item.image === "string" && item.image.trim();
+          if (hasImage) {
+            const img = document.createElement("img");
+            img.src = appUrl(`/images/${item.image}`);
+            img.className = "menu-img";
+            img.onerror = () => {
+              img.src = appUrl("/images/default.png");
+            };
+            row.appendChild(img);
+          }
+
+          const info = document.createElement("div");
+          info.className = "menu-info";
+
+          const nameText = document.createElement("div");
+          const displayName = dishDisplayName(item);
+          const strong = document.createElement("strong");
+          strong.textContent = displayName;
+          nameText.appendChild(strong);
+          nameText.appendChild(document.createElement("br"));
+          nameText.appendChild(document.createTextNode(formatPriceYen(item.price)));
+
+          const controls = document.createElement("div");
+          const minusBtn = document.createElement("button");
+          minusBtn.innerText = "-";
+          minusBtn.disabled = !businessOpen;
+          minusBtn.onclick = () => updateQuantity(item, -1);
+
+          const qtyText = document.createElement("span");
+          qtyText.innerText = ` ${getQuantity(item)} `;
+
+          const plusBtn = document.createElement("button");
+          plusBtn.innerText = "+";
+          plusBtn.disabled = !businessOpen;
+          plusBtn.onclick = () => updateQuantity(item, 1);
+
+          controls.appendChild(minusBtn);
+          controls.appendChild(qtyText);
+          controls.appendChild(plusBtn);
+
+          info.appendChild(nameText);
+          info.appendChild(controls);
+
+          row.appendChild(info);
+          itemsPane.appendChild(row);
+        }
+
+        const activeItems = grouped[activeCategoryKey];
+        if (activeCategoryKey === "drink_liquor") {
+          DRINK_LIQUOR_SECTION_ORDER.forEach((sec) => {
+            const list = activeItems.filter(
+              (it) => String(it.drinkSection || "").trim() === sec,
+            );
+            if (!list.length) return;
+            list.sort((a, b) => Number(a.id) - Number(b.id));
+            const head = document.createElement("div");
+            head.className = "menu-drink-section-head";
+            head.textContent =
+              DRINK_SECTION_LABEL[currentLang][sec] || DRINK_SECTION_LABEL.ja[sec] || sec;
+            itemsPane.appendChild(head);
+            list.forEach((item) => appendMenuItemRow(item));
+          });
+          const unknown = activeItems.filter(
+            (it) => !DRINK_LIQUOR_SECTION_ORDER.includes(String(it.drinkSection || "").trim()),
+          );
+          if (unknown.length) {
+            unknown.sort((a, b) => Number(a.id) - Number(b.id));
+            const head = document.createElement("div");
+            head.className = "menu-drink-section-head";
+            head.textContent =
+              currentLang === "ja" ? "その他" : currentLang === "en" ? "Other" : "其他";
+            itemsPane.appendChild(head);
+            unknown.forEach((item) => appendMenuItemRow(item));
+          }
+        } else {
+          [...activeItems]
+            .sort((a, b) => Number(a.id) - Number(b.id))
+            .forEach((item) => appendMenuItemRow(item));
+        }
+
+        browser.appendChild(categoriesCol);
+        browser.appendChild(itemsPane);
+        menuDiv.appendChild(browser);
+        itemsPane.scrollTop = menuItemsScrollTop;
+        syncMenuViewportLayout();
+      }
+
+      function syncSafariViewportChrome() {
+        const root = document.documentElement;
+        /* 嵌入 admin 弹窗时 visualViewport 属于 iframe，不应再用 gap 推断外层 Safari 工具栏 */
+        if (window.self !== window.top) {
+          root.style.setProperty("--vv-bottom", "0px");
+          return;
+        }
+        const vv = window.visualViewport;
+        if (!vv) {
+          root.style.setProperty("--vv-bottom", "0px");
+          return;
+        }
+        const gap = Math.max(0, Math.round(window.innerHeight - vv.height - vv.offsetTop));
+        root.style.setProperty("--vv-bottom", `${gap}px`);
+      }
+
+      function syncMenuViewportLayout() {
+        const browser = document.querySelector(".menu-browser");
+        const menuTitle = document.getElementById("menuTitle");
+        if (!browser || !menuTitle) return;
+        const orderPanel = document.getElementById("tabOrderPanel");
+        if (orderPanel && !orderPanel.classList.contains("active")) return;
+        const titleRect = menuTitle.getBoundingClientRect();
+        const viewportH = window.innerHeight || document.documentElement.clientHeight;
+        const rootStyle = getComputedStyle(document.documentElement);
+        const vvBottom = Number.parseFloat(rootStyle.getPropertyValue("--vv-bottom")) || 0;
+        const safeBottomPadding = 10;
+        const stickyActionsReserve = window.innerWidth < 768 ? 58 : 22;
+        const available = Math.floor(
+          viewportH -
+            titleRect.bottom -
+            stickyActionsReserve -
+            safeBottomPadding -
+            vvBottom,
+        );
+        const clamped = Math.max(240, Math.min(820, available));
+        document.documentElement.style.setProperty("--menu-browser-height", `${clamped}px`);
+      }
+
+      function scheduleMenuViewportLayoutSync() {
+        syncSafariViewportChrome();
+        // 首次渲染时 iOS/SE 视口高度会晚一拍稳定，做双阶段复算防止刷新后高度异常。
+        requestAnimationFrame(() => syncMenuViewportLayout());
+        setTimeout(() => syncMenuViewportLayout(), 120);
+      }
+
+      function updateQuantity(item, delta) {
+        if (!businessOpen) {
+          alert(t("businessClosedAction"));
+          return;
+        }
+        const index = cart.findIndex((i) => i.id === item.id);
+
+        if (index === -1 && delta > 0) {
+          cart.push({
+            id: item.id,
+            name: item.name,
+            price: item.price,
+            image: item.image,
+            quantity: 1,
+          });
+        } else if (index !== -1) {
+          cart[index].quantity = Math.max(0, cart[index].quantity + delta);
+          if (cart[index].quantity === 0) {
+            cart.splice(index, 1);
+          }
+        }
+
+        renderMenu();
+        renderCart();
+      }
+
+      function renderCart() {
+        const cartUl = document.getElementById("cart");
+        cartUl.innerHTML = "";
+        let total = 0;
+
+        cart.forEach((item) => {
+          const row = document.createElement("div");
+          row.className = "cart-row";
+
+          const main = document.createElement("div");
+          main.className = "cart-row-main";
+
+          const hasImage = typeof item.image === "string" && item.image.trim();
+          if (hasImage) {
+            const img = document.createElement("img");
+            img.className = "cart-row-image";
+            img.src = appUrl(`/images/${item.image}`);
+            img.alt = dishDisplayName(item);
+            img.onerror = () => {
+              img.src = appUrl("/images/default.png");
+            };
+            main.appendChild(img);
+          }
+
+          const name = document.createElement("div");
+          name.className = "cart-row-name";
+          name.textContent = `${dishDisplayName(item)} (${formatPriceYen(item.price)})`;
+
+          const controls = document.createElement("div");
+          controls.className = "cart-row-controls";
+
+          const minusBtn = document.createElement("button");
+          minusBtn.type = "button";
+          minusBtn.textContent = "-";
+          minusBtn.disabled = !businessOpen;
+          minusBtn.onclick = () => updateQuantity(item, -1);
+
+          const qty = document.createElement("span");
+          qty.textContent = String(item.quantity);
+
+          const plusBtn = document.createElement("button");
+          plusBtn.type = "button";
+          plusBtn.textContent = "+";
+          plusBtn.disabled = !businessOpen;
+          plusBtn.onclick = () => updateQuantity(item, 1);
+
+          controls.appendChild(minusBtn);
+          controls.appendChild(qty);
+          controls.appendChild(plusBtn);
+          main.appendChild(name);
+          row.appendChild(main);
+          row.appendChild(controls);
+          cartUl.appendChild(row);
+
+          total += item.price * item.quantity;
+        });
+
+        document.getElementById("cartTotalAmount").textContent = `¥${total.toLocaleString()}`;
+      }
+
+      function submitOrder() {
+        if (!orderingReady) {
+          alert(t("confirmEntry"));
+          return;
+        }
+        if (!tableId) {
+          alert(t("emptyTableId"));
+          return;
+        }
+        if (!guestCount) {
+          alert(t("emptyGuestCount"));
+          return;
+        }
+        if (!businessOpen) {
+          alert(t("businessClosedAction"));
+          return;
+        }
+        if (cart.length === 0) {
+          alert(t("empty"));
+          return;
+        }
+
+        fetch(appUrl("/order"), {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            tableId: tableId,
+            guestCount: Number(guestCount),
+            items: cart,
+            total: cart.reduce((sum, i) => sum + i.price * i.quantity, 0),
+          }),
+        })
+          .then(async (res) => {
+            if (!res.ok) {
+              const msg = await res.text();
+              const errorCode = res.headers.get("x-order-error-code") || "";
+              console.error("下单失败:", res.status, msg, "→", appUrl("/order"));
+              alert(toLocalizedOrderError(msg, { errorCode, status: res.status }));
+              return;
+            }
+            alert(t("success"));
+            cart = [];
+            renderMenu();
+            renderCart();
+          })
+          .catch((err) => {
+            console.error("下单请求异常:", err, "→", appUrl("/order"));
+            alert(t("orderRejected"));
+          });
+      }
+
+      // 修正后的获取订单函数
+      async function fetchOrder() {
+        if (!tableId) return [];
+        const res = await fetch(appUrl(`/order?tableId=${encodeURIComponent(tableId)}`));
+        if (!res.ok) throw new Error(t("fetchOrderFail"));
+        return await res.json(); // 这里返回的是一个订单数组
+      }
+
+      function normalizeItemStatus(item, orderStatus) {
+        if (item?.status === "done" || item?.status === "pending") {
+          return item.status;
+        }
+        // 兼容旧数据：没有菜品状态时，回退整单状态
+        return orderStatus === "done" ? "done" : "pending";
+      }
+
+      async function requestCheckout() {
+        try {
+          if (!orderingReady) {
+            alert(t("confirmEntry"));
+            return;
+          }
+          if (!tableId) {
+            alert(t("emptyTableId"));
+            return;
+          }
+          if (!businessOpen) {
+            alert(t("businessClosedAction"));
+            return;
+          }
+          // 1️⃣ 获取该桌所有订单
+          const orders = await fetchOrder();
+          const activeOrders = orders.filter(
+            (order) => order.status === "pending" || order.status === "done",
+          );
+          if (activeOrders.length === 0) {
+            alert(t("noCheckoutContent"));
+            return;
+          }
+
+          // 2️⃣ 汇总所有未出菜菜品（按菜品状态判断）
+          let unfinishedList = [];
+          activeOrders.forEach((order) => {
+            try {
+              const items =
+                typeof order.items === "string" ? JSON.parse(order.items) : order.items;
+              if (!Array.isArray(items)) return;
+              items.forEach((i) => {
+                if (normalizeItemStatus(i, order.status) === "done") return;
+                unfinishedList.push(`${dishDisplayName({ name: i.name })} x ${i.quantity}`);
+              });
+            } catch (e) {
+              console.error("解析订单菜品失败", e);
+            }
+          });
+
+          // 3️⃣ 如果有未完成菜品，先确认
+          if (unfinishedList.length > 0) {
+            const confirmResult = await window.uiConfirm(
+              t("pendingConfirm").replace("{items}", unfinishedList.join("\n")),
+            );
+
+            if (!confirmResult) return; // 客人点击取消，中断结账
+          }
+
+          // 4️⃣ 发起结账请求
+          fetch(appUrl("/checkout"), {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ tableId: tableId }),
+          })
+            .then((res) => {
+              if (!res.ok)
+                return res.text().then((msg) => {
+                  throw new Error(msg);
+                });
+              return res.text();
+            })
+            .then(() => {
+              alert(t("checkoutNotified"));
+            });
+        } catch (err) {
+          console.error(err);
+          alert(t("checkoutFail"));
+        }
+      }
+      // index.html 中的脚本部分
+
+      // 📸 格式化时间的简易函数
+      function formatTime(isoString) {
+        const date = new Date(isoString);
+        return `${date.getHours().toString().padStart(2, "0")}:${date.getMinutes().toString().padStart(2, "0")}`;
+      }
+
+      async function loadMyOrders() {
+        if (myOrdersLoading) return;
+        myOrdersLoading = true;
+        try {
+          if (!tableId) {
+            const container = document.getElementById("my-orders");
+            hasCheckoutableOrders = false;
+            document.getElementById("ordersTotalAmount").textContent = "¥0";
+            updateCheckoutButtonState();
+            container.innerHTML = `<p class="order-history-empty">${escapeHtml(t("emptyTableId"))}</p>`;
+            return;
+          }
+          const res = await fetch(appUrl(`/order?tableId=${encodeURIComponent(tableId)}`));
+          const allOrders = await res.json();
+          const container = document.getElementById("my-orders");
+
+          // 【关键修复】：过滤掉已支付 (paid) 的订单
+          // 只有 'pending' 或 'done' 状态的订单才会显示在客人手机上
+          // 管理员一旦点完“确认收款”，状态变 paid，这里过滤后就是空数组
+          const activeOrders = allOrders.filter(
+            (order) => order.status === "pending" || order.status === "done",
+          );
+          hasCheckoutableOrders = activeOrders.length > 0;
+          const ordersTotal = activeOrders.reduce((sum, order) => sum + (Number(order.total) || 0), 0);
+          document.getElementById("ordersTotalAmount").textContent = `¥${ordersTotal.toLocaleString()}`;
+          updateCheckoutButtonState();
+
+          if (activeOrders.length === 0) {
+            container.innerHTML = `<p class="order-history-empty">${escapeHtml(t("noOrders"))}</p>`;
+            return;
+          }
+
+          // 对当前活跃订单按时间倒序排列
+          activeOrders.reverse();
+
+          let html = "";
+          activeOrders.forEach((order) => {
+            const items = JSON.parse(order.items);
+            const hasPendingItem = items.some(
+              (i) => normalizeItemStatus(i, order.status) !== "done",
+            );
+            const statusLabel = hasPendingItem
+              ? `<span>${escapeHtml(t("statusPreparing"))}</span>`
+              : `<span>${escapeHtml(t("statusAllDone"))}</span>`;
+            const footClass = hasPendingItem ? "pending" : "done";
+
+            html += `
+              <div class="order-history-card">
+                <div class="order-history-head">
+                  <span>${escapeHtml(t("orderNo"))}: ${escapeHtml(order.order_no)}</span>
+                  <span>${formatTime(order.created_at)}</span>
+                </div>
+                <div class="order-history-items">
+                  ${items
+                    .map((i) => {
+                      const itemStatus = normalizeItemStatus(i, order.status);
+                      const statusClass = itemStatus === "done" ? "done" : "pending";
+                      return `
+                        <div class="order-history-item">
+                          <span class="order-history-item-name">${escapeHtml(dishDisplayName({ name: i.name }))} x ${Number(i.quantity) || 0}</span>
+                          <span class="order-history-item-status ${statusClass}">${escapeHtml(itemStatus === "done" ? t("itemDone") : t("itemPending"))}</span>
+                        </div>
+                      `;
+                    })
+                    .join("")}
+                </div>
+                <div class="order-history-foot ${footClass}">
+                  ${statusLabel}
+                </div>
+              </div>
+            `;
+          });
+          container.innerHTML = html;
+        } catch (err) {
+          console.error("加载订单失败", err);
+          alert(t("fetchOrderFail"));
+          hasCheckoutableOrders = false;
+          document.getElementById("ordersTotalAmount").textContent = "¥0";
+          updateCheckoutButtonState();
+        } finally {
+          myOrdersLoading = false;
+        }
+      }
+
+      function scheduleMyOrdersRefresh() {
+        if (orderRefreshTimer) clearTimeout(orderRefreshTimer);
+        orderRefreshTimer = setTimeout(() => {
+          loadMyOrders();
+        }, 120);
+      }
+
+      // 修改之前的初始化逻辑
+      async function init() {
+        await refreshBusinessStatus();
+        await loadMenu();
+        loadMyOrders();
+        scheduleMenuViewportLayoutSync();
+      }
+
+      function setupGuestSocket() {
+        if (guestSocket) {
+          guestSocket.disconnect();
+          guestSocket = null;
+        }
+        if (!tableId) return;
+        if (typeof io !== "function") {
+          console.warn("socket.io 未加载，跳过实时订阅（点单仍可走HTTP）");
+          return;
+        }
+        const ap = readAppBasePath();
+        guestSocket = io("/guest", {
+          path: ap ? `${ap.replace(/\/+$/, "")}/socket.io` : "/socket.io",
+          query: { tableId },
+        });
+        guestSocket.on("data-updated", (payload) => {
+          if (payload && payload.tableId && payload.tableId !== tableId) return;
+          refreshBusinessStatus().catch(() => {});
+          scheduleMyOrdersRefresh();
+        });
+      }
+
+      async function bootstrap() {
+        await loadAllowedTables();
+        guestCount = "";
+        localStorage.removeItem("guestCount");
+        setupGuestCountInput();
+        renderText();
+        const langSelect = document.getElementById("langSelect");
+        if (langSelect) {
+          langSelect.value = currentLang;
+          langSelect.onchange = () => setLang(langSelect.value);
+        }
+        renderTableSelect();
+        await tryAutoEnterFromURL();
+        const tabOrderBtn = document.getElementById("tabOrderBtn");
+        const tabCartBtn = document.getElementById("tabCartBtn");
+        const tabOrdersBtn = document.getElementById("tabOrdersBtn");
+        const enterOrderingBtn = document.getElementById("enterOrderingBtn");
+        if (tabOrderBtn) tabOrderBtn.onclick = () => setActiveTab("order");
+        if (tabCartBtn) tabCartBtn.onclick = () => setActiveTab("cart");
+        if (tabOrdersBtn) tabOrdersBtn.onclick = () => setActiveTab("orders");
+        if (enterOrderingBtn) enterOrderingBtn.onclick = () => confirmDiningInfo().catch((err) => alert(err.message));
+        renderCart();
+        renderRecentTableButtons();
+        updateTabVisibility();
+        await init();
+        scheduleMenuViewportLayoutSync();
+        window.addEventListener("resize", () => scheduleMenuViewportLayoutSync());
+        window.addEventListener("orientationchange", () => {
+          setTimeout(() => scheduleMenuViewportLayoutSync(), 100);
+        });
+        if (window.visualViewport) {
+          window.visualViewport.addEventListener("resize", scheduleMenuViewportLayoutSync);
+          window.visualViewport.addEventListener("scroll", scheduleMenuViewportLayoutSync);
+        }
+      }
+
+      bootstrap().catch((err) => console.error(err));
+    </script>
+  </body>
+</html>

@@ -1,0 +1,44 @@
+{
+  "name": "restaurant-order",
+  "version": "1.0.0",
+  "description": "",
+  "main": "db.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "jest --runInBand",
+    "test:unit": "jest tests/unit --runInBand",
+    "test:api": "jest tests/api --runInBand",
+    "test:e2e": "playwright test",
+    "test:all": "npm run test:unit && npm run test:api && npm run test:e2e",
+    "test:pre-shop": "npm run test:all",
+    "test:load": "k6 run ./tests/load/k6-order-100vu.js",
+    "test:load:mixed": "k6 run ./tests/load/k6-mixed-flow-100vu.js",
+    "test:load:staged": "k6 run ./tests/load/k6-staged-mixed-flow.js",
+    "test:load:tiered": "k6 run ./tests/load/k6-mixed-flow-tiered.js",
+    "test:prepare": "node scripts/reset-runtime-data.js",
+    "test:http-flow": "node scripts/full-flow-test.js",
+    "smoke:noodles": "node scripts/smoke-noodles-acceptance.js",
+    "clear-manager-totp": "node scripts/clear-manager-totp-binding.js",
+    "import:drinks": "node scripts/import-drink-menus.js",
+    "check:db": "node scripts/check-shop-db-health.js",
+    "smoke:order": "node scripts/smoke-order-health.js",
+    "tunnel": "powershell -ExecutionPolicy Bypass -File scripts/start-cloudflare-tunnel.ps1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
+    "qrcode": "^1.5.4",
+    "socket.io": "^4.8.3",
+    "speakeasy": "^2.0.0",
+    "sqlite3": "5.1.7"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.59.1",
+    "jest": "^30.3.0",
+    "supertest": "^7.2.2"
+  }
+}

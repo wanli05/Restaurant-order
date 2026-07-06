@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <title>Recovery System</title>
+    <meta name="app-version" content="1.0.0" />
+    <link rel="stylesheet" href="/css/staff-settings.css" />
+    <style>
+      :root {
+        --bg: #f3f5f7;
+        --card: #ffffff;
+        --line: #e5e7eb;
+        --text: #0f172a;
+        --muted: #64748b;
+        --ok-bg: #ecfdf3;
+        --ok-text: #166534;
+        --warn-bg: #fff7ed;
+        --warn-text: #9a3412;
+        --danger-bg: #fef2f2;
+        --danger-text: #b91c1c;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans JP",
+          "Noto Sans SC", Arial, sans-serif;
+        padding: 14px;
+      }
+      .lang-bar {
+        margin-bottom: 10px;
+        display: inline-flex;
+        gap: 8px;
+        padding: 4px;
+        background: #eceff3;
+        border-radius: 12px;
+      }
+      .lang-bar button {
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background: #fff;
+        min-height: 36px;
+        padding: 6px 12px;
+        cursor: pointer;
+      }
+      .card {
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 12px;
+        margin-bottom: 10px;
+      }
+      .verdict {
+        border-radius: 10px;
+        padding: 12px;
+        font-weight: 700;
+        margin-bottom: 8px;
+      }
+      .verdict.ok {
+        background: var(--ok-bg);
+        color: var(--ok-text);
+      }
+      .verdict.warn {
+        background: var(--warn-bg);
+        color: var(--warn-text);
+      }
+      .verdict.danger {
+        background: var(--danger-bg);
+        color: var(--danger-text);
+      }
+      .tip {
+        color: var(--muted);
+        margin-bottom: 4px;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+      }
+      .item {
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 10px;
+        background: #fafafa;
+      }
+      .item .k {
+        color: var(--muted);
+        font-size: 13px;
+      }
+      .item .v {
+        font-size: 22px;
+        font-weight: 700;
+        margin-top: 2px;
+      }
+      .item .v.v-db {
+        font-size: 15px;
+        line-height: 1.35;
+        word-break: break-word;
+      }
+      .logs {
+        margin: 0;
+        padding-left: 18px;
+      }
+      .logs li {
+        margin-bottom: 6px;
+        color: #334155;
+      }
+      .actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+      }
+      .actions button {
+        min-height: 40px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background: #fff;
+        cursor: pointer;
+      }
+      @media (min-width: 900px) {
+        body {
+          max-width: 920px;
+          margin: 0 auto;
+          padding: 18px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="admin-header-row">
+      <div class="lang-bar">
+        <button type="button" onclick="setLang('ja')">日本語</button>
+        <button type="button" onclick="setLang('zh')">中文</button>
+      </div>
+      <div class="admin-settings-wrap">
+        <button
+          type="button"
+          id="adminSettingsTrigger"
+          class="admin-settings-trigger"
+          aria-expanded="false"
+          aria-haspopup="true"
+          aria-controls="adminSettingsMenu"
+          title=""
+        >
+          ⚙
+        </button>
+        <div id="adminSettingsMenu" class="admin-settings-menu" role="menu" aria-labelledby="adminSettingsTrigger">
+          <button type="button" role="menuitem" id="adminSettingsMenuTotpBtn"></button>
+          <button type="button" role="menuitem" id="adminSettingsMenuTokenBtn"></button>
+          <button type="button" role="menuitem" id="adminSettingsMenuAboutBtn"></button>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <h1 id="title" style="margin: 0 0 8px 0"></h1>
+      <div id="verdict" class="verdict"></div>
+      <div id="tip" class="tip"></div>
+      <div id="updatedAt" class="tip"></div>
+      <div class="actions" style="margin-top: 10px">
+        <button id="refreshBtn" onclick="loadCheck()"></button>
+        <button
+          id="backFinanceBtn"
+          onclick="window.open('/finance.html', '_blank', 'noopener')"
+        ></button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2 id="overviewTitle" style="margin: 0 0 8px 0"></h2>
+      <div class="grid">
+        <div class="item">
+          <div class="k" id="kBusiness"></div>
+          <div class="v" id="vBusiness"></div>
+        </div>
+        <div class="item">
+          <div class="k" id="kActive"></div>
+          <div class="v" id="vActive">0</div>
+        </div>
+        <div class="item">
+          <div class="k" id="kCheckout"></div>
+          <div class="v" id="vCheckout">0</div>
+        </div>
+        <div class="item">
+          <div class="k" id="kInflight"></div>
+          <div class="v" id="vInflight">0</div>
+        </div>
+        <div class="item">
+          <div class="k" id="kDbIntegrity"></div>
+          <div class="v v-db" id="vDbIntegrity">—</div>
+        </div>
+        <div class="item">
+          <div class="k" id="kDbMode"></div>
+          <div class="v v-db" id="vDbMode">—</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2 id="logsTitle" style="margin: 0 0 8px 0"></h2>
+      <ul id="logs" class="logs"></ul>
+    </div>
+
+    <div id="adminTokenHelpModal" class="modal">
+      <div class="modal-content admin-settings-modal-card">
+        <div class="edit-order-head">
+          <h3 id="adminTokenHelpTitle"></h3>
+          <button type="button" id="adminTokenHelpCloseBtn" aria-label="Close">×</button>
+        </div>
+        <p id="adminTokenHelpBody" class="edit-order-sub" style="white-space: pre-line; margin-bottom: 14px"></p>
+        <div class="manager-totp-enroll-actions">
+          <button type="button" id="adminTokenHelpReloginBtn" class="manager-paid-edit-btn manager-paid-edit-btn--primary"></button>
+        </div>
+      </div>
+    </div>
+    <div id="adminAboutModal" class="modal">
+      <div class="modal-content admin-settings-modal-card">
+        <div class="edit-order-head">
+          <h3 id="adminAboutTitle"></h3>
+          <button type="button" id="adminAboutCloseBtn" aria-label="Close">×</button>
+        </div>
+        <p id="adminAboutVersion" class="admin-about-version"></p>
+        <p id="adminAboutBody" class="admin-about-body"></p>
+        <div class="manager-totp-enroll-actions">
+          <button type="button" id="adminAboutOkBtn" class="manager-paid-edit-btn manager-paid-edit-btn--primary"></button>
+        </div>
+      </div>
+    </div>
+    <div id="adminTotpRotateModal" class="modal">
+      <div class="modal-content admin-settings-modal-card">
+        <div class="edit-order-head">
+          <h3 id="adminTotpRotateTitle"></h3>
+          <button type="button" id="adminTotpRotateCloseBtn" aria-label="Close">×</button>
+        </div>
+        <p id="adminTotpRotateHint" class="edit-order-sub" style="margin-bottom: 10px"></p>
+        <label style="display: flex; flex-direction: column; gap: 6px">
+          <span id="adminTotpRotateLabel" style="font-size: 13px; font-weight: 500; color: #334155"></span>
+          <input
+            id="adminTotpRotateInput"
+            class="manager-paid-edit-reason-input"
+            type="text"
+            inputmode="numeric"
+            maxlength="8"
+            autocomplete="one-time-code"
+          />
+        </label>
+        <div class="manager-totp-enroll-actions">
+          <button type="button" id="adminTotpRotateCancelBtn" class="manager-paid-edit-btn"></button>
+          <button type="button" id="adminTotpRotateNextBtn" class="manager-paid-edit-btn manager-paid-edit-btn--primary"></button>
+        </div>
+      </div>
+    </div>
+    <div id="managerTotpEnrollModal" class="modal">
+      <div class="modal-content manager-totp-enroll-modal-card">
+        <div class="edit-order-head">
+          <h3 id="managerTotpEnrollModalTitle"></h3>
+          <button type="button" id="managerTotpEnrollModalCloseBtn">×</button>
+        </div>
+        <p id="managerTotpEnrollModalIntro" class="edit-order-sub"></p>
+        <div class="manager-totp-enroll-panel-inner">
+          <img id="managerTotpQrImg" alt="" width="220" height="220" style="display: block; margin: 0 auto; image-rendering: pixelated" />
+          <p id="managerTotpSecretCaption" style="margin: 12px 0 4px; font-size: 13px; color: #64748b"></p>
+          <code id="managerTotpSecretText" style="display: block; word-break: break-all; font-size: 13px; margin-bottom: 12px"></code>
+          <label style="display: flex; flex-direction: column; gap: 6px">
+            <span id="managerTotpConfirmLabel" style="font-size: 13px; font-weight: 500; color: #334155"></span>
+            <input
+              id="managerTotpConfirmInput"
+              class="manager-paid-edit-reason-input"
+              type="text"
+              inputmode="numeric"
+              maxlength="8"
+              autocomplete="one-time-code"
+            />
+          </label>
+          <div class="manager-totp-enroll-actions">
+            <button type="button" id="managerTotpCancelBtn" class="manager-paid-edit-btn"></button>
+            <button type="button" id="managerTotpConfirmBtn" class="manager-paid-edit-btn manager-paid-edit-btn--primary"></button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="/js/shared/staff-auth.js"></script>
+    <script src="/js/shared/staff-settings-ui.js"></script>
+    <script src="/js/recovery/main.js"></script>
+  </body>
+</html>
