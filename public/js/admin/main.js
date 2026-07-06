@@ -2462,6 +2462,8 @@ let staffSocket = null;
 function setupStaffSocket() {
   const token = window.StaffAuth.getToken();
   if (!token) return;
+  if (window.StaffAuth.isStaticDemoMode?.()) return;
+  if (typeof io !== "function") return;
   staffSocket = io("/staff", {
     auth: { token },
   });

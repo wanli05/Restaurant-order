@@ -592,6 +592,8 @@ if (ensureStaffLogin()) {
 function setupStaffSocket() {
   const token = window.StaffAuth.getToken();
   if (!token) return;
+  if (window.StaffAuth.isStaticDemoMode?.()) return;
+  if (typeof io !== "function") return;
   const socket = io("/staff", {
     auth: { token },
   });
