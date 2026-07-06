@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="app-version" content="1.0.0" />
     <title>员工登录</title>
-    <link rel="stylesheet" href="/css/staff-settings.css" />
+    <link rel="stylesheet" href="./css/staff-settings.css" />
     <style>
       :root {
         --bg: #f3f5f7;
@@ -218,12 +218,12 @@
       </div>
     </div>
 
-    <script src="/js/shared/staff-auth.js"></script>
-    <script src="/js/shared/staff-settings-ui.js"></script>
+    <script src="./js/shared/staff-auth.js"></script>
+    <script src="./js/shared/staff-settings-ui.js"></script>
     <script>
       const { STAFF_TOKEN_KEY, STAFF_LANG_KEY } = window.StaffAuth;
       const params = new URLSearchParams(window.location.search);
-      const redirect = params.get("redirect") || "/finance.html";
+      const redirect = params.get("redirect") || "./finance.html";
       let currentLang = localStorage.getItem(STAFF_LANG_KEY) || "ja";
       const text = {
         ja: {
@@ -275,7 +275,7 @@
           error.textContent = t("errEmpty");
           return;
         }
-        const res = await fetch("/auth/login", {
+        const res = await fetch("./auth/login", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ username, password }),

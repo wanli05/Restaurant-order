@@ -1,3 +1,23 @@
+function ensureStaffAuth() {
+  if (window.StaffAuth) return window.StaffAuth;
+  console.warn("[staff-auth] missing, using fallback bridge");
+  const fallback = {
+    STAFF_TOKEN_KEY: "staffToken",
+    STAFF_LANG_KEY: "staffLang",
+    getToken: () => "",
+    clearToken: () => {},
+    getLang: (defaultLang) => defaultLang || "ja",
+    setLang: () => {},
+    ensureLogin: () => true,
+    authFetch: (url, options) => fetch(url, options),
+    redirectToLogin: () => {},
+    isStaticDemoMode: () => true,
+  };
+  window.StaffAuth = fallback;
+  return fallback;
+}
+ensureStaffAuth();
+
 function installStyledAlert() {
   const modal = document.getElementById("uiAlertModal");
   const messageEl = document.getElementById("uiAlertMessage");

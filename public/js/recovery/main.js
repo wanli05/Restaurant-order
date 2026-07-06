@@ -1,4 +1,19 @@
 (function recoveryPage() {
+  if (!window.StaffAuth) {
+    console.warn("[staff-auth] missing, using fallback bridge");
+    window.StaffAuth = {
+      STAFF_TOKEN_KEY: "staffToken",
+      STAFF_LANG_KEY: "staffLang",
+      getToken: () => "",
+      clearToken: () => {},
+      getLang: (defaultLang) => defaultLang || "ja",
+      setLang: () => {},
+      ensureLogin: () => true,
+      authFetch: (url, options) => fetch(url, options),
+      redirectToLogin: () => {},
+      isStaticDemoMode: () => true,
+    };
+  }
   const auth = window.StaffAuth;
   let currentLang = auth.getLang("ja");
 
