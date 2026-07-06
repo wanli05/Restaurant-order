@@ -724,6 +724,19 @@
     <script>
       /* 先于顾客页脚本执行；与 meta app-base-path 一致时从子路径拉取客户端。async=false 尽量早准备好 io */
       (function loadGuestSocketVendor() {
+        function isStaticDemoHost() {
+          try {
+            var host = String(location.hostname || "").toLowerCase();
+            var qp = new URLSearchParams(location.search || "");
+            return host.endsWith("github.io") || qp.get("demo") === "1";
+          } catch (e) {
+            return false;
+          }
+        }
+        if (isStaticDemoHost()) {
+          return;
+        }
+
         function readGuestAppBasePath() {
           try {
             var el = document.querySelector('meta[name="app-base-path"]');
