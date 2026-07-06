@@ -1142,6 +1142,21 @@
         return `${base}${p}`.replace(/\/{2,}/g, "/");
       }
 
+      function buildRawMenuUrlForPages() {
+        try {
+          const host = String(location.hostname || "").toLowerCase();
+          if (!host.endsWith("github.io")) return "";
+          const user = host.replace(/\.github\.io$/, "");
+          const repo = String(location.pathname || "/")
+            .split("/")
+            .filter(Boolean)[0];
+          if (!user || !repo) return "";
+          return `https://raw.githubusercontent.com/${user}/${repo}/main/public/demo/menu.full.json`;
+        } catch (_) {
+          return "";
+        }
+      }
+
       /** GitHub Pages 静态演示模式（仅前端本地数据，不依赖后端 API）。 */
       function isStaticDemoMode() {
         try {
@@ -1247,18 +1262,31 @@
         const store = loadDemoStore();
 
         if (pathOnly === "/api/menu" && method === "GET") {
+          const applyFullMenuIfValid = (fullMenu) => {
+            if (!Array.isArray(fullMenu) || fullMenu.length === 0) return null;
+            if (!Array.isArray(store.menu) || store.menu.length !== fullMenu.length) {
+              saveDemoStore({ ...store, menu: fullMenu });
+            }
+            return createMockResponse(200, fullMenu);
+          };
           try {
             const res = await fetch(appUrl("/demo/menu.full.json"), { cache: "no-store" });
             if (res.ok) {
               const fullMenu = await res.json();
-              if (Array.isArray(fullMenu) && fullMenu.length > 0) {
-                if (
-                  !Array.isArray(store.menu) ||
-                  store.menu.length !== fullMenu.length
-                ) {
-                  saveDemoStore({ ...store, menu: fullMenu });
-                }
-                return createMockResponse(200, fullMenu);
+              const loaded = applyFullMenuIfValid(fullMenu);
+              if (loaded) return loaded;
+            }
+          } catch (_) {
+            // ignore and fallback to stored data
+          }
+          try {
+            const rawUrl = buildRawMenuUrlForPages();
+            if (rawUrl) {
+              const res = await fetch(rawUrl, { cache: "no-store" });
+              if (res.ok) {
+                const fullMenu = await res.json();
+                const loaded = applyFullMenuIfValid(fullMenu);
+                if (loaded) return loaded;
               }
             }
           } catch (_) {
