@@ -21,6 +21,7 @@
     "clear-manager-totp": "node scripts/clear-manager-totp-binding.js",
     "import:drinks": "node scripts/import-drink-menus.js",
     "check:db": "node scripts/check-shop-db-health.js",
+    "export:pages-menu": "node scripts/export-pages-demo-menu.js",
     "smoke:order": "node scripts/smoke-order-health.js",
     "tunnel": "powershell -ExecutionPolicy Bypass -File scripts/start-cloudflare-tunnel.ps1"
   },

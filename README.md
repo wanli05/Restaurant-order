@@ -43,6 +43,7 @@ npm start
 - `npm test` - テスト実行
 - `npm run check:db` - DB健全性チェック
 - `npm run smoke:order` - 営業状態→メニュー→注文のスモークチェック
+- `npm run export:pages-menu` - GitHub Pages 用の静的フルメニューJSONを再生成
 
 ## GitHub Pages 静的デモ
 

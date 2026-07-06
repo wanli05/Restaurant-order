@@ -1157,14 +1157,7 @@
       const DEMO_NOTICE_KEY = "ghPagesDemoNoticeShownV1";
 
       function getDemoDefaultMenu() {
-        return [
-          { id: 101, name: { zh: "毛豆", ja: "枝豆", en: "Edamame" }, price: 400, category: "cold_dish", image: "" },
-          { id: 102, name: { zh: "羊肉串", ja: "ラム肉串焼き", en: "Grilled Lamb" }, price: 200, category: "grilled_fried", image: "" },
-          { id: 103, name: { zh: "炒饭", ja: "チャーハン", en: "Fried Rice" }, price: 800, category: "dim_sum_rice", image: "" },
-          { id: 104, name: { zh: "麻辣烫", ja: "マーラータン", en: "Malatang" }, price: 900, category: "noodles", image: "" },
-          { id: 105, name: { zh: "可乐", ja: "コーラ", en: "Cola" }, price: 250, category: "drink_soft", image: "" },
-          { id: 106, name: { zh: "啤酒", ja: "ビール", en: "Beer" }, price: 500, category: "drink_liquor", image: "" },
-        ];
+        return [];
       }
 
       function loadDemoStore() {
@@ -1254,7 +1247,24 @@
         const store = loadDemoStore();
 
         if (pathOnly === "/api/menu" && method === "GET") {
-          return createMockResponse(200, store.menu);
+          try {
+            const res = await fetch(appUrl("/demo/menu.full.json"), { cache: "no-store" });
+            if (res.ok) {
+              const fullMenu = await res.json();
+              if (Array.isArray(fullMenu) && fullMenu.length > 0) {
+                if (
+                  !Array.isArray(store.menu) ||
+                  store.menu.length !== fullMenu.length
+                ) {
+                  saveDemoStore({ ...store, menu: fullMenu });
+                }
+                return createMockResponse(200, fullMenu);
+              }
+            }
+          } catch (_) {
+            // ignore and fallback to stored data
+          }
+          return createMockResponse(200, store.menu || []);
         }
         if (pathOnly === "/api/tables" && method === "GET") {
           return createMockResponse(200, { tables: store.allowedTables });

@@ -1,0 +1,1838 @@
+[
+  {
+    "id": 51,
+    "name": {
+      "zh": "肉夹馍",
+      "ja": "中華風ハンバーガー",
+      "en": "Chinese hamburger"
+    },
+    "price": 500,
+    "category": "dim_sum_rice",
+    "image": "street_chinese_hamburger.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 52,
+    "name": {
+      "zh": "豆浆",
+      "ja": "豆乳",
+      "en": "Soy Milk"
+    },
+    "price": 200,
+    "category": "dim_sum_rice",
+    "image": "street_soy_milk.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 53,
+    "name": {
+      "zh": "豆腐脑",
+      "ja": "トウファオ",
+      "en": "Douhua"
+    },
+    "price": 300,
+    "category": "dim_sum_rice",
+    "image": "street_douhua.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 54,
+    "name": {
+      "zh": "凉皮",
+      "ja": "リャンピー",
+      "en": "Liangpi Cold Noodles"
+    },
+    "price": 800,
+    "category": "dim_sum_rice",
+    "image": "street_liangpi.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 55,
+    "name": {
+      "zh": "烤冷面",
+      "ja": "冷麺焼き",
+      "en": "Grilled Northeastern Cold Noodles"
+    },
+    "price": 500,
+    "category": "dim_sum_rice",
+    "image": "street_grilled_northeastern_cold_noodles.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 56,
+    "name": {
+      "zh": "馅饼",
+      "ja": "シェンビン",
+      "en": "Meat Pie"
+    },
+    "price": 400,
+    "category": "dim_sum_rice",
+    "image": "street_meat_pie.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 57,
+    "name": {
+      "zh": "芝麻球",
+      "ja": "ゴマ団子",
+      "en": "Fried Sesame Balls"
+    },
+    "price": 500,
+    "category": "dim_sum_rice",
+    "image": "street_fried_sesame_balls.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 58,
+    "name": {
+      "zh": "韩式冷面",
+      "ja": "韓国冷麺",
+      "en": "Korean Cold Noodles"
+    },
+    "price": 800,
+    "category": "dim_sum_rice",
+    "image": "street_korean_cold_noodles.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 59,
+    "name": {
+      "zh": "日式炒面",
+      "ja": "焼きそば",
+      "en": "Yakisoba"
+    },
+    "price": 800,
+    "category": "dim_sum_rice",
+    "image": "street_yakisoba.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 60,
+    "name": {
+      "zh": "茶叶蛋",
+      "ja": "お茶漬け玉子",
+      "en": "Chinese Tea Egg"
+    },
+    "price": 150,
+    "category": "dim_sum_rice",
+    "image": "street_chinese_tea_egg.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 61,
+    "name": {
+      "zh": "羊杂汤",
+      "ja": "羊モツスープ",
+      "en": "Lamb Offal Soup"
+    },
+    "price": 1000,
+    "category": "dim_sum_rice",
+    "image": "street_lamb_offal_soup.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 62,
+    "name": {
+      "zh": "牛肉汤",
+      "ja": "牛肉スープ",
+      "en": "Beef Soup"
+    },
+    "price": 1000,
+    "category": "dim_sum_rice",
+    "image": "street_beef_soup.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 63,
+    "name": {
+      "zh": "皮蛋粥",
+      "ja": "ピータンお粥",
+      "en": "Century Egg Congee"
+    },
+    "price": 700,
+    "category": "dim_sum_rice",
+    "image": "street_century_egg_congee.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 64,
+    "name": {
+      "zh": "卤肉饭",
+      "ja": "ル一ロ一飯",
+      "en": "Braised pork on rice"
+    },
+    "price": 800,
+    "category": "dim_sum_rice",
+    "image": "dim_braised_pork_on_rice.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 65,
+    "name": {
+      "zh": "生煎小笼包",
+      "ja": "焼き小籠包",
+      "en": "Pan-fried soup dumplings"
+    },
+    "price": 500,
+    "category": "dim_sum_rice",
+    "image": "dim_pan_fried_soup_dumplings.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 66,
+    "name": {
+      "zh": "水饺",
+      "ja": "水餃子",
+      "en": "Dumplings"
+    },
+    "price": 800,
+    "category": "dim_sum_rice",
+    "image": "dim_dumplings.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 67,
+    "name": {
+      "zh": "煎饺",
+      "ja": "焼き餃子",
+      "en": "Potstickers"
+    },
+    "price": 600,
+    "category": "dim_sum_rice",
+    "image": "dim_potstickers.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 68,
+    "name": {
+      "zh": "韭菜盒子",
+      "ja": "ニラのおやき",
+      "en": "Fried Chinese Leek Dumplings"
+    },
+    "price": 500,
+    "category": "dim_sum_rice",
+    "image": "dim_fried_chinese_leek_dumplings.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 69,
+    "name": {
+      "zh": "酸汤水饺",
+      "ja": "酸っぱいスープ水餃子",
+      "en": "Hot and Sour Dumpling Soup"
+    },
+    "price": 800,
+    "category": "dim_sum_rice",
+    "image": "dim_hot_sour_dumpling_soup.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 70,
+    "name": {
+      "zh": "馄饨",
+      "ja": "ワンタン",
+      "en": "Wonton"
+    },
+    "price": 600,
+    "category": "dim_sum_rice",
+    "image": "dim_wonton.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 71,
+    "name": {
+      "zh": "拌馄饨",
+      "ja": "ワンタン和え",
+      "en": "Marinated Wonton"
+    },
+    "price": 800,
+    "category": "dim_sum_rice",
+    "image": "dim_marinated_wonton.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 72,
+    "name": {
+      "zh": "葱油饼",
+      "ja": "ツォンションヨピン",
+      "en": "Scallion Pancake"
+    },
+    "price": 300,
+    "category": "dim_sum_rice",
+    "image": "dim_scallion_pancake.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 73,
+    "name": {
+      "zh": "手抓饼",
+      "ja": "シューシャオピン",
+      "en": "Chinese Flaky Pancake"
+    },
+    "price": 500,
+    "category": "dim_sum_rice",
+    "image": "dim_chinese_flaky_pancake.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 74,
+    "name": {
+      "zh": "牛肉炒饭",
+      "ja": "牛肉チャーハン",
+      "en": "Beef Fried Rice"
+    },
+    "price": 800,
+    "category": "dim_sum_rice",
+    "image": "dim_beef_fried_rice.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 75,
+    "name": {
+      "zh": "鸡排饭",
+      "ja": "鶏カツ飯",
+      "en": "Crispy Chicken Chop Rice"
+    },
+    "price": 800,
+    "category": "dim_sum_rice",
+    "image": "dim_crispy_chicken_chop_rice.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 76,
+    "name": {
+      "zh": "麻婆豆腐盖饭",
+      "ja": "麻婆丼",
+      "en": "Mapo Tofu with Rice"
+    },
+    "price": 800,
+    "category": "dim_sum_rice",
+    "image": "dim_mapo_tofu_rice.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 77,
+    "name": {
+      "zh": "炒饭",
+      "ja": "チャーハン",
+      "en": "Fried Rice"
+    },
+    "price": 800,
+    "category": "dim_sum_rice",
+    "image": "dim_fried_rice.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 78,
+    "name": {
+      "zh": "米饭",
+      "ja": "ライス",
+      "en": "Plain Rice"
+    },
+    "price": 200,
+    "category": "dim_sum_rice",
+    "image": "",
+    "drinkSection": ""
+  },
+  {
+    "id": 164,
+    "name": {
+      "zh": "盐味包菜",
+      "ja": "塩キャベツ",
+      "en": "Salted Cabbage"
+    },
+    "price": 600,
+    "category": "cold_dish",
+    "image": "cold_salted_cabbage.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 165,
+    "name": {
+      "zh": "毛豆",
+      "ja": "枝豆",
+      "en": "Edamame"
+    },
+    "price": 400,
+    "category": "cold_dish",
+    "image": "cold_edamame.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 166,
+    "name": {
+      "zh": "辣白菜",
+      "ja": "キムチ",
+      "en": "Kimchi"
+    },
+    "price": 400,
+    "category": "cold_dish",
+    "image": "cold_kimchi.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 167,
+    "name": {
+      "zh": "皮蛋豆腐",
+      "ja": "ピータン豆腐",
+      "en": "Century egg tofu"
+    },
+    "price": 600,
+    "category": "cold_dish",
+    "image": "cold_century_egg_tofu.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 168,
+    "name": {
+      "zh": "拌木耳",
+      "ja": "キクラゲ和え",
+      "en": "Black Fungus Salad"
+    },
+    "price": 500,
+    "category": "cold_dish",
+    "image": "cold_black_fungus_salad.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 169,
+    "name": {
+      "zh": "炸花生米",
+      "ja": "揚げピーナッツ",
+      "en": "Peanut Fried"
+    },
+    "price": 400,
+    "category": "cold_dish",
+    "image": "cold_fried_peanuts.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 170,
+    "name": {
+      "zh": "拌豆干丝",
+      "ja": "干し豆腐和え",
+      "en": "Shredded Dried Tofu Salad"
+    },
+    "price": 550,
+    "category": "cold_dish",
+    "image": "cold_shredded_dried_tofu_salad.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 171,
+    "name": {
+      "zh": "春卷",
+      "ja": "春巻き",
+      "en": "Spring rolls"
+    },
+    "price": 400,
+    "category": "cold_dish",
+    "image": "cold_spring_rolls.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 172,
+    "name": {
+      "zh": "炸薯条",
+      "ja": "ポテトフライ",
+      "en": "French fries"
+    },
+    "price": 500,
+    "category": "cold_dish",
+    "image": "cold_french_fries.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 173,
+    "name": {
+      "zh": "台湾香肠",
+      "ja": "台湾腸詰め",
+      "en": "Taiwan Sausage"
+    },
+    "price": 300,
+    "category": "cold_dish",
+    "image": "cold_taiwan_sausage.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 174,
+    "name": {
+      "zh": "日式鸡蛋卷",
+      "ja": "玉子焼き",
+      "en": "Japanese rolled omelette"
+    },
+    "price": 500,
+    "category": "cold_dish",
+    "image": "cold_japanese_rolled_omelette.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 175,
+    "name": {
+      "zh": "拌鸡胗",
+      "ja": "砂肝和え",
+      "en": "Marinated Chicken Gizzard"
+    },
+    "price": 600,
+    "category": "cold_dish",
+    "image": "cold_marinated_chicken_gizzard.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 176,
+    "name": {
+      "zh": "烧鸡(整只)",
+      "ja": "鶏の丸焼き(一羽)",
+      "en": "Red-Cooked Chicken (Whole)"
+    },
+    "price": 1200,
+    "category": "cold_dish",
+    "image": "cold_red_cooked_chicken.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 177,
+    "name": {
+      "zh": "烧鸡(半只)",
+      "ja": "鶏の丸焼き(半羽)",
+      "en": "Red-Cooked Chicken (Half)"
+    },
+    "price": 600,
+    "category": "cold_dish",
+    "image": "cold_red_cooked_chicken.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 178,
+    "name": {
+      "zh": "酱牛肉",
+      "ja": "牛スネ醤油煮",
+      "en": "Soy-braised Beef shank"
+    },
+    "price": 1000,
+    "category": "cold_dish",
+    "image": "cold_soy_braised_beef_shank.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 179,
+    "name": {
+      "zh": "拌牛肚",
+      "ja": "ハチノス和え",
+      "en": "Marinated Beef Tripe"
+    },
+    "price": 800,
+    "category": "cold_dish",
+    "image": "cold_marinated_beef_tripe.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 180,
+    "name": {
+      "zh": "拌牛肉",
+      "ja": "牛肉和え",
+      "en": "Marinated Beef"
+    },
+    "price": 1000,
+    "category": "cold_dish",
+    "image": "cold_marinated_beef.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 181,
+    "name": {
+      "zh": "酱猪蹄",
+      "ja": "豚足",
+      "en": "Soy-braised pig trotters"
+    },
+    "price": 300,
+    "category": "cold_dish",
+    "image": "cold_soy_braised_pig_trotters.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 182,
+    "name": {
+      "zh": "拌猪蹄",
+      "ja": "豚足和え",
+      "en": "Marinated Pork feet"
+    },
+    "price": 600,
+    "category": "cold_dish",
+    "image": "cold_marinated_pork_feet.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 183,
+    "name": {
+      "zh": "拌猪耳",
+      "ja": "豚ミミ和え",
+      "en": "Marinated Pork ear"
+    },
+    "price": 600,
+    "category": "cold_dish",
+    "image": "cold_marinated_pork_ear.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 184,
+    "name": {
+      "zh": "酱鸡爪",
+      "ja": "鶏もみじ",
+      "en": "Soy-braised Chicken feet"
+    },
+    "price": 800,
+    "category": "cold_dish",
+    "image": "cold_soy_braised_chicken_feet.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 185,
+    "name": {
+      "zh": "拌脱骨鸡爪",
+      "ja": "骨なし鶏もみじ和え",
+      "en": "Marinated Boneless chicken feet"
+    },
+    "price": 800,
+    "category": "cold_dish",
+    "image": "cold_marinated_boneless_chicken_feet.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 186,
+    "name": {
+      "zh": "蒜泥白肉",
+      "ja": "豚肉のニンニクソースかけ",
+      "en": "Sichuan Garlic Pork Slices"
+    },
+    "price": 600,
+    "category": "cold_dish",
+    "image": "cold_sichuan_garlic_pork_slices.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 217,
+    "name": {
+      "zh": "烤牡蛎",
+      "ja": "焼き力キ",
+      "en": "Grilled Oyster"
+    },
+    "price": 1000,
+    "category": "grilled_fried",
+    "image": "grilled_oyster.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 218,
+    "name": {
+      "zh": "炸臭豆腐(黑)",
+      "ja": "揚げ臭い豆腐(黒)",
+      "en": "Deep-Fried Black Stinky Tofu (Black)"
+    },
+    "price": 800,
+    "category": "grilled_fried",
+    "image": "grilled_stinky_tofu_black.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 219,
+    "name": {
+      "zh": "炸臭豆腐(白)",
+      "ja": "揚げ臭い豆腐(白)",
+      "en": "Deep-Fried Black Stinky Tofu (White)"
+    },
+    "price": 800,
+    "category": "grilled_fried",
+    "image": "grilled_stinky_tofu_white.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 220,
+    "name": {
+      "zh": "羊肉串",
+      "ja": "ラム肉串焼き",
+      "en": "Grilled Lamb"
+    },
+    "price": 200,
+    "category": "grilled_fried",
+    "image": "grilled_lamb_skewer.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 221,
+    "name": {
+      "zh": "烤猪蹄",
+      "ja": "焼き豚足",
+      "en": "Grilled Pork Feet"
+    },
+    "price": 500,
+    "category": "grilled_fried",
+    "image": "grilled_pork_feet.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 222,
+    "name": {
+      "zh": "烤大虾",
+      "ja": "焼き大海老",
+      "en": "Grilled Prawn"
+    },
+    "price": 200,
+    "category": "grilled_fried",
+    "image": "grilled_prawn_skewer.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 223,
+    "name": {
+      "zh": "鸡肉串",
+      "ja": "鶏肉串焼き",
+      "en": "Grilled Chicken Thigh"
+    },
+    "price": 150,
+    "category": "grilled_fried",
+    "image": "grilled_chicken_thigh_skewer.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 224,
+    "name": {
+      "zh": "鸡皮串",
+      "ja": "鶏皮串焼き",
+      "en": "Grilled Chicken Skin"
+    },
+    "price": 150,
+    "category": "grilled_fried",
+    "image": "grilled_chicken_skin_skewer.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 225,
+    "name": {
+      "zh": "砂肝串",
+      "ja": "砂肝串焼き",
+      "en": "Grilled Chicken Gizzard"
+    },
+    "price": 150,
+    "category": "grilled_fried",
+    "image": "grilled_chicken_gizzard_skewer.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 226,
+    "name": {
+      "zh": "鱿鱼串",
+      "ja": "イカ串焼き",
+      "en": "Grilled Squid Skewers"
+    },
+    "price": 200,
+    "category": "grilled_fried",
+    "image": "grilled_squid_skewer.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 227,
+    "name": {
+      "zh": "烤面筋",
+      "ja": "面筋串焼き",
+      "en": "Grilled Gluten"
+    },
+    "price": 300,
+    "category": "grilled_fried",
+    "image": "grilled_gluten_skewer.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 228,
+    "name": {
+      "zh": "烤实蛋",
+      "ja": "シータン串焼き",
+      "en": "Grilled Solid Egg"
+    },
+    "price": 300,
+    "category": "grilled_fried",
+    "image": "grilled_seitan_egg_skewer.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 229,
+    "name": {
+      "zh": "炸香肠",
+      "ja": "ソーセージ揚げ",
+      "en": "Fried Sausages"
+    },
+    "price": 500,
+    "category": "grilled_fried",
+    "image": "fried_sausage.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 230,
+    "name": {
+      "zh": "炸大虾",
+      "ja": "海老唐揚げ",
+      "en": "Fried Prawn"
+    },
+    "price": 600,
+    "category": "grilled_fried",
+    "image": "fried_prawn.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 231,
+    "name": {
+      "zh": "炸鸡块",
+      "ja": "鶏の唐揚げ",
+      "en": "Fried Chicken"
+    },
+    "price": 600,
+    "category": "grilled_fried",
+    "image": "fried_chicken.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 232,
+    "name": {
+      "zh": "炸鱿鱼须",
+      "ja": "イカゲソ唐揚げ",
+      "en": "Fried Squid legs"
+    },
+    "price": 650,
+    "category": "grilled_fried",
+    "image": "fried_squid_legs.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 268,
+    "name": {
+      "zh": "毛血旺",
+      "ja": "毛血旺",
+      "en": "Chongqing style boiled Blood Curd"
+    },
+    "price": 1000,
+    "category": "casserole",
+    "image": "casserole_spicy_blood_curd.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 269,
+    "name": {
+      "zh": "砂锅小龙虾",
+      "ja": "ザリガニ鍋",
+      "en": "Crayfish Casserole"
+    },
+    "price": 1000,
+    "category": "casserole",
+    "image": "casserole_crayfish.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 270,
+    "name": {
+      "zh": "砂锅鸭血",
+      "ja": "鴨の血鍋",
+      "en": "Duck Blood Jelly Casserole"
+    },
+    "price": 1000,
+    "category": "casserole",
+    "image": "casserole_duck_blood_jelly.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 271,
+    "name": {
+      "zh": "砂锅鸡肉",
+      "ja": "鶏肉鍋",
+      "en": "Chicken Casserole"
+    },
+    "price": 1000,
+    "category": "casserole",
+    "image": "casserole_chicken.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 272,
+    "name": {
+      "zh": "砂锅牡蛎",
+      "ja": "カキ鍋",
+      "en": "Oyster Casserole"
+    },
+    "price": 1200,
+    "category": "casserole",
+    "image": "casserole_oyster.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 273,
+    "name": {
+      "zh": "砂锅肥肠",
+      "ja": "ホルモン鍋",
+      "en": "Large Intestines Casserole"
+    },
+    "price": 1000,
+    "category": "casserole",
+    "image": "casserole_large_intestines.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 274,
+    "name": {
+      "zh": "砂锅豆腐",
+      "ja": "豆腐鍋",
+      "en": "Tofu Casserole"
+    },
+    "price": 800,
+    "category": "casserole",
+    "image": "casserole_tofu.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 275,
+    "name": {
+      "zh": "砂锅牛肚",
+      "ja": "ハチノス鍋",
+      "en": "Honeycomb Tripe Casserole"
+    },
+    "price": 1000,
+    "category": "casserole",
+    "image": "casserole_honeycomb_tripe.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 276,
+    "name": {
+      "zh": "砂锅排骨",
+      "ja": "パイコツ鍋",
+      "en": "Pork Ribs Casserole"
+    },
+    "price": 1000,
+    "category": "casserole",
+    "image": "casserole_pork_ribs.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 277,
+    "name": {
+      "zh": "砂锅红烧肉",
+      "ja": "豚角煮鍋",
+      "en": "Braised Pork Belly Casserole"
+    },
+    "price": 1000,
+    "category": "casserole",
+    "image": "casserole_braised_pork_belly.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 278,
+    "name": {
+      "zh": "砂锅牛肉",
+      "ja": "牛肉鍋",
+      "en": "Beef Casserole"
+    },
+    "price": 1000,
+    "category": "casserole",
+    "image": "casserole_beef.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 279,
+    "name": {
+      "zh": "砂锅蛤蜊",
+      "ja": "アサリ鍋",
+      "en": "Clams Casserole"
+    },
+    "price": 800,
+    "category": "casserole",
+    "image": "casserole_clams.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 280,
+    "name": {
+      "zh": "砂锅猪蹄",
+      "ja": "豚足鍋",
+      "en": "Pork Feet Casserole"
+    },
+    "price": 800,
+    "category": "casserole",
+    "image": "casserole_pork_feet.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 281,
+    "name": {
+      "zh": "砂锅粉丝",
+      "ja": "春雨鍋",
+      "en": "Vermicelli Casserole"
+    },
+    "price": 800,
+    "category": "casserole",
+    "image": "casserole_vermicelli.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 282,
+    "name": {
+      "zh": "砂锅大虾",
+      "ja": "大海老鍋",
+      "en": "Prawn Casserole"
+    },
+    "price": 1200,
+    "category": "casserole",
+    "image": "casserole_prawn.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 283,
+    "name": {
+      "zh": "砂锅鸡爪",
+      "ja": "もみじ鍋",
+      "en": "Chicken Feet Casserole"
+    },
+    "price": 1000,
+    "category": "casserole",
+    "image": "casserole_chicken_feet.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 284,
+    "name": {
+      "zh": "砂锅牛筋",
+      "ja": "牛足すじ鍋",
+      "en": "Beef Tendon Casserole"
+    },
+    "price": 1000,
+    "category": "casserole",
+    "image": "casserole_beef_tendon.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 285,
+    "name": {
+      "zh": "砂锅金针菇",
+      "ja": "エノキ鍋",
+      "en": "Enoki Casserole"
+    },
+    "price": 800,
+    "category": "casserole",
+    "image": "casserole_enoki.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 286,
+    "name": {
+      "zh": "砂锅牛肉金针菇",
+      "ja": "牛肉エノキ鍋",
+      "en": "Beef Enoki Casserole"
+    },
+    "price": 1000,
+    "category": "casserole",
+    "image": "casserole_beef_enoki.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 443,
+    "name": {
+      "zh": "麻辣烫",
+      "ja": "マーラータン",
+      "en": "Malatang"
+    },
+    "price": 900,
+    "category": "noodles",
+    "image": "spicy_malatang.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 444,
+    "name": {
+      "zh": "麻辣香锅",
+      "ja": "マーラージャンゴオ",
+      "en": "Spicy Hot Pot"
+    },
+    "price": 1000,
+    "category": "noodles",
+    "image": "spicy_hot_pot.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 445,
+    "name": {
+      "zh": "麻辣米线",
+      "ja": "マーラー米ヌードル",
+      "en": "Spicy Rice Noodles"
+    },
+    "price": 900,
+    "category": "noodles",
+    "image": "spicy_rice_noodles.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 446,
+    "name": {
+      "zh": "麻辣方便面",
+      "ja": "マーラインスタントラーメン",
+      "en": "Spicy Instant Noodles"
+    },
+    "price": 900,
+    "category": "noodles",
+    "image": "spicy_instant_noodles.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 447,
+    "name": {
+      "zh": "麻辣拌面",
+      "ja": "マーラーまぜ麺",
+      "en": "Spicy Mixed Noodles"
+    },
+    "price": 1000,
+    "category": "noodles",
+    "image": "spicy_mixed_noodles.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 448,
+    "name": {
+      "zh": "麻辣乌冬面",
+      "ja": "マーラーうどん",
+      "en": "Spicy Udon Noodles"
+    },
+    "price": 900,
+    "category": "noodles",
+    "image": "spicy_udon_noodles.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 449,
+    "name": {
+      "zh": "土豆粉",
+      "ja": "ジャガイモ麺",
+      "en": "Potato Starch Noodles"
+    },
+    "price": 900,
+    "category": "noodles",
+    "image": "spicy_potato_starch_noodles.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 450,
+    "name": {
+      "zh": "牛筋面",
+      "ja": "まぜもちもち麺",
+      "en": "Chewy Noodles"
+    },
+    "price": 900,
+    "category": "noodles",
+    "image": "spicy_chewy_noodles.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 451,
+    "name": {
+      "zh": "大盘鸡拌面",
+      "ja": "鶏肉と野菜あんかけ麺",
+      "en": "Spicy Chicken with Noodles"
+    },
+    "price": 1000,
+    "category": "noodles",
+    "image": "spicy_chicken_noodles.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 452,
+    "name": {
+      "zh": "酸辣粉",
+      "ja": "サンラー春雨",
+      "en": "Hot and Sour Glass Noodles"
+    },
+    "price": 900,
+    "category": "noodles",
+    "image": "spicy_hot_sour_glass_noodles.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 453,
+    "name": {
+      "zh": "板面",
+      "ja": "板麺",
+      "en": "Sword Shaved Noodles"
+    },
+    "price": 1000,
+    "category": "noodles",
+    "image": "spicy_sword_shaved_noodles.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 454,
+    "name": {
+      "zh": "酸辣小面",
+      "ja": "重慶サンラー麺",
+      "en": "Hot and Sour Noodles"
+    },
+    "price": 1000,
+    "category": "noodles",
+    "image": "spicy_hot_sour_noodles.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 455,
+    "name": {
+      "zh": "麻辣小面",
+      "ja": "重慶マーラー麺",
+      "en": "Mala Noodles"
+    },
+    "price": 1000,
+    "category": "noodles",
+    "image": "spicy_mala_noodles.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 456,
+    "name": {
+      "zh": "卤煮",
+      "ja": "煮物麺",
+      "en": "Braised Pork Offal Stew Noodles"
+    },
+    "price": 1000,
+    "category": "noodles",
+    "image": "spicy_braised_pork_offal_stew_noodles.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 457,
+    "name": {
+      "zh": "牛肉面",
+      "ja": "牛肉麺",
+      "en": "Beef Noodles"
+    },
+    "price": 900,
+    "category": "noodles",
+    "image": "noodles_beef_noodles.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 458,
+    "name": {
+      "zh": "牛肉乌冬",
+      "ja": "牛肉うどん",
+      "en": "Beef Udon"
+    },
+    "price": 900,
+    "category": "noodles",
+    "image": "noodles_beef_udon.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 459,
+    "name": {
+      "zh": "牛肉米线",
+      "ja": "牛肉米ヌードル",
+      "en": "Beef Soup Rice Noodles"
+    },
+    "price": 900,
+    "category": "noodles",
+    "image": "noodles_beef_soup_rice_noodles.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 460,
+    "name": {
+      "zh": "𰻝𰻝面",
+      "ja": "ビャンビャン麺",
+      "en": "Biang Biang Noodles"
+    },
+    "price": 900,
+    "category": "noodles",
+    "image": "noodles_biang_biang_noodles.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 461,
+    "name": {
+      "zh": "鸡汤米线",
+      "ja": "鶏スープ米ヌードル",
+      "en": "Chicken Soup Rice Noodles"
+    },
+    "price": 900,
+    "category": "noodles",
+    "image": "noodles_chicken_soup_rice_noodles.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 462,
+    "name": {
+      "zh": "鸭血粉丝汤",
+      "ja": "鴨の血と春雨スープ",
+      "en": "Duck Blood Vermicelli Soup"
+    },
+    "price": 1000,
+    "category": "noodles",
+    "image": "noodles_duck_blood_vermicelli_soup.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 463,
+    "name": {
+      "zh": "担担面",
+      "ja": "担々麺",
+      "en": "Tantanmen"
+    },
+    "price": 1000,
+    "category": "noodles",
+    "image": "noodles_tantanmen.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 464,
+    "name": {
+      "zh": "海鲜汤面",
+      "ja": "海鮮タンメン",
+      "en": "Seafood Noodles"
+    },
+    "price": 1000,
+    "category": "noodles",
+    "image": "noodles_seafood_noodles.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 465,
+    "name": {
+      "zh": "鸡肉面",
+      "ja": "鶏肉麺",
+      "en": "Chicken Noodles"
+    },
+    "price": 1000,
+    "category": "noodles",
+    "image": "noodles_chicken_noodles.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 466,
+    "name": {
+      "zh": "肥肠面",
+      "ja": "豚ホルモン麺",
+      "en": "Large Intestine Noodles"
+    },
+    "price": 900,
+    "category": "noodles",
+    "image": "noodles_large_intestine_noodles.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 467,
+    "name": {
+      "zh": "排骨面",
+      "ja": "パイコウ麺",
+      "en": "Pork Ribs Noodles"
+    },
+    "price": 1000,
+    "category": "noodles",
+    "image": "noodles_pork_ribs_noodles.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 468,
+    "name": {
+      "zh": "蔬菜汤面",
+      "ja": "野菜タンメン",
+      "en": "Vegetable Noodle Soup"
+    },
+    "price": 1000,
+    "category": "noodles",
+    "image": "noodles_vegetable_noodle_soup.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 469,
+    "name": {
+      "zh": "豚骨拉面",
+      "ja": "豚骨ラーメン",
+      "en": "Pork Bone Ramen"
+    },
+    "price": 1000,
+    "category": "noodles",
+    "image": "noodles_pork_bone_ramen.png",
+    "drinkSection": ""
+  },
+  {
+    "id": 548,
+    "name": {
+      "zh": "豆浆",
+      "ja": "豆乳",
+      "en": "Soymilk"
+    },
+    "price": 200,
+    "category": "drink_soft",
+    "image": "",
+    "drinkSection": ""
+  },
+  {
+    "id": 549,
+    "name": {
+      "zh": "矿泉水",
+      "ja": "ミネラルウォーター",
+      "en": "Mineral water"
+    },
+    "price": 150,
+    "category": "drink_soft",
+    "image": "",
+    "drinkSection": ""
+  },
+  {
+    "id": 550,
+    "name": {
+      "zh": "绿茶（瓶装）",
+      "ja": "緑茶（ペット）",
+      "en": "Green tea (bottled)"
+    },
+    "price": 200,
+    "category": "drink_soft",
+    "image": "",
+    "drinkSection": ""
+  },
+  {
+    "id": 551,
+    "name": {
+      "zh": "乌龙茶（瓶装）",
+      "ja": "烏龍茶（ペット）",
+      "en": "Oolong tea (bottled)"
+    },
+    "price": 200,
+    "category": "drink_soft",
+    "image": "",
+    "drinkSection": ""
+  },
+  {
+    "id": 552,
+    "name": {
+      "zh": "冰红茶",
+      "ja": "レモンティー",
+      "en": "Iced tea"
+    },
+    "price": 200,
+    "category": "drink_soft",
+    "image": "",
+    "drinkSection": ""
+  },
+  {
+    "id": 553,
+    "name": {
+      "zh": "酸梅汤",
+      "ja": "梅ジュース",
+      "en": "Plum juice"
+    },
+    "price": 200,
+    "category": "drink_soft",
+    "image": "",
+    "drinkSection": ""
+  },
+  {
+    "id": 554,
+    "name": {
+      "zh": "（凉茶）王老吉 310ml 罐",
+      "ja": "（リャンチャ）ワンラオジー 310ml 缶",
+      "en": "Wanglaoji herbal tea (310ml can)"
+    },
+    "price": 200,
+    "category": "drink_soft",
+    "image": "",
+    "drinkSection": ""
+  },
+  {
+    "id": 555,
+    "name": {
+      "zh": "弹珠汽水",
+      "ja": "ラムネ",
+      "en": "Ramune"
+    },
+    "price": 350,
+    "category": "drink_soft",
+    "image": "",
+    "drinkSection": ""
+  },
+  {
+    "id": 556,
+    "name": {
+      "zh": "柚子汁",
+      "ja": "グレープフルーツジュース",
+      "en": "Grapefruit juice"
+    },
+    "price": 350,
+    "category": "drink_soft",
+    "image": "",
+    "drinkSection": ""
+  },
+  {
+    "id": 557,
+    "name": {
+      "zh": "姜汁汽水",
+      "ja": "ジンジャエール",
+      "en": "Ginger ale"
+    },
+    "price": 350,
+    "category": "drink_soft",
+    "image": "",
+    "drinkSection": ""
+  },
+  {
+    "id": 558,
+    "name": {
+      "zh": "橙汁",
+      "ja": "オレンジジュース",
+      "en": "Orange juice"
+    },
+    "price": 350,
+    "category": "drink_soft",
+    "image": "",
+    "drinkSection": ""
+  },
+  {
+    "id": 559,
+    "name": {
+      "zh": "初恋（巨峰葡萄+卡尔皮斯）",
+      "ja": "初恋（巨峰＋カルピス）",
+      "en": "Kyoho grape & Calpis mix"
+    },
+    "price": 400,
+    "category": "drink_soft",
+    "image": "",
+    "drinkSection": ""
+  },
+  {
+    "id": 560,
+    "name": {
+      "zh": "卡尔皮斯苏打",
+      "ja": "カルピスソーダ",
+      "en": "Calpis soda"
+    },
+    "price": 350,
+    "category": "drink_soft",
+    "image": "",
+    "drinkSection": ""
+  },
+  {
+    "id": 561,
+    "name": {
+      "zh": "威士忌嗨棒",
+      "ja": "ハイボール",
+      "en": "Whiskey highball"
+    },
+    "price": 400,
+    "category": "drink_liquor",
+    "image": "",
+    "drinkSection": "highball"
+  },
+  {
+    "id": 562,
+    "name": {
+      "zh": "可乐威士忌嗨棒",
+      "ja": "コークハイボール",
+      "en": "Coke highball"
+    },
+    "price": 450,
+    "category": "drink_liquor",
+    "image": "",
+    "drinkSection": "highball"
+  },
+  {
+    "id": 563,
+    "name": {
+      "zh": "梅子威士忌嗨棒",
+      "ja": "男梅ハイボール",
+      "en": "Plum whisky highball"
+    },
+    "price": 450,
+    "category": "drink_liquor",
+    "image": "",
+    "drinkSection": "highball"
+  },
+  {
+    "id": 564,
+    "name": {
+      "zh": "青苹果威士忌嗨棒",
+      "ja": "青リンゴハイボール",
+      "en": "Green apple whisky highball"
+    },
+    "price": 450,
+    "category": "drink_liquor",
+    "image": "",
+    "drinkSection": "highball"
+  },
+  {
+    "id": 565,
+    "name": {
+      "zh": "柠檬威士忌嗨棒",
+      "ja": "レモンハイボール",
+      "en": "Lemon whisky highball"
+    },
+    "price": 450,
+    "category": "drink_liquor",
+    "image": "",
+    "drinkSection": "highball"
+  },
+  {
+    "id": 566,
+    "name": {
+      "zh": "姜汁威士忌嗨棒",
+      "ja": "ジンジャーハイボール",
+      "en": "Ginger whisky highball"
+    },
+    "price": 450,
+    "category": "drink_liquor",
+    "image": "",
+    "drinkSection": "highball"
+  },
+  {
+    "id": 567,
+    "name": {
+      "zh": "乌龙茶嗨（烧酒）",
+      "ja": "烏龍ハイ",
+      "en": "Oolong tea shochu highball"
+    },
+    "price": 400,
+    "category": "drink_liquor",
+    "image": "",
+    "drinkSection": "shochu"
+  },
+  {
+    "id": 568,
+    "name": {
+      "zh": "绿茶嗨（烧酒）",
+      "ja": "緑茶ハイ",
+      "en": "Green tea shochu highball"
+    },
+    "price": 400,
+    "category": "drink_liquor",
+    "image": "",
+    "drinkSection": "shochu"
+  },
+  {
+    "id": 569,
+    "name": {
+      "zh": "烧酒加冰",
+      "ja": "焼酎ロック",
+      "en": "Shochu on the rocks"
+    },
+    "price": 400,
+    "category": "drink_liquor",
+    "image": "",
+    "drinkSection": "shochu"
+  },
+  {
+    "id": 570,
+    "name": {
+      "zh": "烧酒水割",
+      "ja": "焼酎水割り",
+      "en": "Shochu & water"
+    },
+    "price": 400,
+    "category": "drink_liquor",
+    "image": "",
+    "drinkSection": "shochu"
+  },
+  {
+    "id": 571,
+    "name": {
+      "zh": "烧酒热水割",
+      "ja": "焼酎お湯割",
+      "en": "Shochu & hot water"
+    },
+    "price": 400,
+    "category": "drink_liquor",
+    "image": "",
+    "drinkSection": "shochu"
+  },
+  {
+    "id": 572,
+    "name": {
+      "zh": "菊正宗（冷）",
+      "ja": "菊正宗（冷）",
+      "en": "Kiku-Masamune (cold)"
+    },
+    "price": 600,
+    "category": "drink_liquor",
+    "image": "",
+    "drinkSection": "nihonshu"
+  },
+  {
+    "id": 573,
+    "name": {
+      "zh": "菊正宗（热）",
+      "ja": "菊正宗（ホット）",
+      "en": "Kiku-Masamune (hot)"
+    },
+    "price": 600,
+    "category": "drink_liquor",
+    "image": "",
+    "drinkSection": "nihonshu"
+  },
+  {
+    "id": 574,
+    "name": {
+      "zh": "姜汁沙哇",
+      "ja": "ジンジャサワー",
+      "en": "Ginger sour"
+    },
+    "price": 400,
+    "category": "drink_liquor",
+    "image": "",
+    "drinkSection": "sour"
+  },
+  {
+    "id": 575,
+    "name": {
+      "zh": "橙汁沙哇",
+      "ja": "オレンジサワー",
+      "en": "Orange sour"
+    },
+    "price": 400,
+    "category": "drink_liquor",
+    "image": "",
+    "drinkSection": "sour"
+  },
+  {
+    "id": 576,
+    "name": {
+      "zh": "卡尔皮斯沙哇",
+      "ja": "カルピスサワー",
+      "en": "Calpis sour"
+    },
+    "price": 400,
+    "category": "drink_liquor",
+    "image": "",
+    "drinkSection": "sour"
+  },
+  {
+    "id": 577,
+    "name": {
+      "zh": "弹珠汽水沙哇",
+      "ja": "ラムネサワー",
+      "en": "Ramune sour"
+    },
+    "price": 400,
+    "category": "drink_liquor",
+    "image": "",
+    "drinkSection": "sour"
+  },
+  {
+    "id": 578,
+    "name": {
+      "zh": "柠檬沙哇",
+      "ja": "レモンサワー",
+      "en": "Lemon sour"
+    },
+    "price": 400,
+    "category": "drink_liquor",
+    "image": "",
+    "drinkSection": "sour"
+  },
+  {
+    "id": 579,
+    "name": {
+      "zh": "梅子沙哇",
+      "ja": "男梅サワー",
+      "en": "Plum sour"
+    },
+    "price": 400,
+    "category": "drink_liquor",
+    "image": "",
+    "drinkSection": "sour"
+  },
+  {
+    "id": 580,
+    "name": {
+      "zh": "白桃沙哇",
+      "ja": "白桃サワー",
+      "en": "White peach sour"
+    },
+    "price": 400,
+    "category": "drink_liquor",
+    "image": "",
+    "drinkSection": "sour"
+  },
+  {
+    "id": 581,
+    "name": {
+      "zh": "青苹果沙哇",
+      "ja": "青リンゴサワー",
+      "en": "Green apple sour"
+    },
+    "price": 400,
+    "category": "drink_liquor",
+    "image": "",
+    "drinkSection": "sour"
+  },
+  {
+    "id": 582,
+    "name": {
+      "zh": "西柚沙哇",
+      "ja": "グレープフルーツサワー",
+      "en": "Grapefruit sour"
+    },
+    "price": 400,
+    "category": "drink_liquor",
+    "image": "",
+    "drinkSection": "sour"
+  },
+  {
+    "id": 583,
+    "name": {
+      "zh": "巨峰沙哇",
+      "ja": "巨峰サワー",
+      "en": "Kyoho grape sour"
+    },
+    "price": 400,
+    "category": "drink_liquor",
+    "image": "",
+    "drinkSection": "sour"
+  },
+  {
+    "id": 584,
+    "name": {
+      "zh": "朝日 Super Dry（生啤）",
+      "ja": "スーパードライ生ビール",
+      "en": "Asahi Super Dry (draft)"
+    },
+    "price": 450,
+    "category": "drink_liquor",
+    "image": "",
+    "drinkSection": "beer"
+  },
+  {
+    "id": 585,
+    "name": {
+      "zh": "朝日 Super Dry（瓶装）",
+      "ja": "スーパードライ瓶ビール",
+      "en": "Asahi Super Dry (bottle)"
+    },
+    "price": 500,
+    "category": "drink_liquor",
+    "image": "",
+    "drinkSection": "beer"
+  },
+  {
+    "id": 586,
+    "name": {
+      "zh": "青岛啤酒（小瓶）",
+      "ja": "チンタオビール（小瓶）",
+      "en": "Tsingtao beer (small bottle)"
+    },
+    "price": 450,
+    "category": "drink_liquor",
+    "image": "",
+    "drinkSection": "beer"
+  },
+  {
+    "id": 587,
+    "name": {
+      "zh": "绍兴酒",
+      "ja": "紹興酒",
+      "en": "Shaoxing wine"
+    },
+    "price": 400,
+    "category": "drink_liquor",
+    "image": "",
+    "drinkSection": "shaoxing"
+  }
+]
