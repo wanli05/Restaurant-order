@@ -728,8 +728,17 @@
           try {
             var el = document.querySelector('meta[name="app-base-path"]');
             var raw = el && el.content ? String(el.content).trim() : "";
-            if (!raw || raw === "/") return "";
-            return "/" + raw.replace(/^\/+|\/+$/g, "").split(/\/+/).filter(Boolean).join("/");
+            if (raw && raw !== "/") {
+              return "/" + raw.replace(/^\/+|\/+$/g, "").split(/\/+/).filter(Boolean).join("/");
+            }
+            var host = String(location.hostname || "").toLowerCase();
+            if (host.endsWith("github.io")) {
+              var first = String(location.pathname || "/")
+                .split("/")
+                .filter(Boolean)[0];
+              return first ? "/" + first : "";
+            }
+            return "";
           } catch (e) {
             return "";
           }
@@ -907,6 +916,7 @@
           orderDbBusy: "系统繁忙，请稍后重试。",
           orderServerConfig: "系统配置异常，请联系店员处理。",
           orderServerError: "系统异常，请联系店员处理。",
+          demoNotice: "GitHub Pages 静态演示模式：当前数据仅保存在本浏览器，刷新后会重置。",
           tableInputPlaceholder: "手动输入桌号（例如 T12）",
           setTableBtn: "设置桌号",
           invalidTableId: "该桌号不可用，请从列表中选择。",
@@ -959,6 +969,8 @@
           orderDbBusy: "システムが混み合っています。少し待ってから再試行してください。",
           orderServerConfig: "システム設定に問題があります。スタッフへ連絡してください。",
           orderServerError: "システム異常です。スタッフへ連絡してください。",
+          demoNotice:
+            "GitHub Pages 静的デモモード：データはこのブラウザ内のみ保存され、再読み込みで初期化されます。",
           tableInputPlaceholder: "手動でテーブル番号を入力（例: T12）",
           setTableBtn: "テーブル設定",
           invalidTableId: "このテーブル番号は使用できません。一覧から選んでください。",
@@ -1011,6 +1023,8 @@
           orderDbBusy: "System is busy. Please try again shortly.",
           orderServerConfig: "System configuration issue. Please contact staff.",
           orderServerError: "System error. Please contact staff.",
+          demoNotice:
+            "GitHub Pages static demo mode: data is only stored in this browser and resets after reload.",
           tableInputPlaceholder: "Enter table number manually (e.g. T12)",
           setTableBtn: "Set Table",
           invalidTableId: "Invalid table. Please choose from the list.",
@@ -1091,9 +1105,17 @@
         try {
           const el = document.querySelector('meta[name="app-base-path"]');
           const raw = el && typeof el.content === "string" ? el.content.trim() : "";
-          if (!raw || raw === "/") return "";
-          const trimmed = "/" + raw.replace(/^\/+|\/+$/g, "").split(/\/+/).filter(Boolean).join("/");
-          return trimmed === "/" ? "" : trimmed;
+          if (raw && raw !== "/") {
+            const trimmed =
+              "/" + raw.replace(/^\/+|\/+$/g, "").split(/\/+/).filter(Boolean).join("/");
+            return trimmed === "/" ? "" : trimmed;
+          }
+          const host = String(location.hostname || "").toLowerCase();
+          if (host.endsWith("github.io")) {
+            const first = String(location.pathname || "/").split("/").filter(Boolean)[0] || "";
+            return first ? `/${first}` : "";
+          }
+          return "";
         } catch (_) {
           return "";
         }
@@ -1105,6 +1127,202 @@
         const base = readAppBasePath();
         if (!base) return p;
         return `${base}${p}`.replace(/\/{2,}/g, "/");
+      }
+
+      /** GitHub Pages 静态演示模式（仅前端本地数据，不依赖后端 API）。 */
+      function isStaticDemoMode() {
+        try {
+          const host = String(location.hostname || "").toLowerCase();
+          const qp = new URLSearchParams(location.search);
+          return host.endsWith("github.io") || qp.get("demo") === "1";
+        } catch (_) {
+          return false;
+        }
+      }
+
+      const DEMO_STORAGE_KEY = "ghPagesDemoStoreV1";
+      const DEMO_NOTICE_KEY = "ghPagesDemoNoticeShownV1";
+
+      function getDemoDefaultMenu() {
+        return [
+          { id: 101, name: { zh: "毛豆", ja: "枝豆", en: "Edamame" }, price: 400, category: "cold_dish", image: "" },
+          { id: 102, name: { zh: "羊肉串", ja: "ラム肉串焼き", en: "Grilled Lamb" }, price: 200, category: "grilled_fried", image: "" },
+          { id: 103, name: { zh: "炒饭", ja: "チャーハン", en: "Fried Rice" }, price: 800, category: "dim_sum_rice", image: "" },
+          { id: 104, name: { zh: "麻辣烫", ja: "マーラータン", en: "Malatang" }, price: 900, category: "noodles", image: "" },
+          { id: 105, name: { zh: "可乐", ja: "コーラ", en: "Cola" }, price: 250, category: "drink_soft", image: "" },
+          { id: 106, name: { zh: "啤酒", ja: "ビール", en: "Beer" }, price: 500, category: "drink_liquor", image: "" },
+        ];
+      }
+
+      function loadDemoStore() {
+        const fallback = {
+          menu: getDemoDefaultMenu(),
+          allowedTables: ["1A", "1B", "1C", "2A", "2B", "2C", "3A", "3B", "3C", "T"],
+          businessOpen: true,
+          orders: [],
+          checkoutRequests: [],
+          seq: 1,
+        };
+        try {
+          const raw = localStorage.getItem(DEMO_STORAGE_KEY);
+          if (!raw) return fallback;
+          const parsed = JSON.parse(raw);
+          return {
+            ...fallback,
+            ...parsed,
+            menu: Array.isArray(parsed?.menu) && parsed.menu.length ? parsed.menu : fallback.menu,
+            allowedTables:
+              Array.isArray(parsed?.allowedTables) && parsed.allowedTables.length
+                ? parsed.allowedTables
+                : fallback.allowedTables,
+            orders: Array.isArray(parsed?.orders) ? parsed.orders : [],
+            checkoutRequests: Array.isArray(parsed?.checkoutRequests)
+              ? parsed.checkoutRequests
+              : [],
+            seq: Number.isInteger(parsed?.seq) && parsed.seq > 0 ? parsed.seq : 1,
+          };
+        } catch (_) {
+          return fallback;
+        }
+      }
+
+      function saveDemoStore(next) {
+        localStorage.setItem(DEMO_STORAGE_KEY, JSON.stringify(next));
+      }
+
+      function createMockHeaders(extra = {}) {
+        const map = new Map(Object.entries(extra).map(([k, v]) => [String(k).toLowerCase(), String(v)]));
+        return {
+          get(name) {
+            return map.get(String(name || "").toLowerCase()) || null;
+          },
+        };
+      }
+
+      function createMockResponse(status, body, headers = {}) {
+        const textBody = typeof body === "string" ? body : JSON.stringify(body);
+        return {
+          ok: status >= 200 && status < 300,
+          status,
+          headers: createMockHeaders(headers),
+          async json() {
+            if (typeof body === "string") {
+              try {
+                return JSON.parse(body);
+              } catch (_) {
+                return {};
+              }
+            }
+            return body;
+          },
+          async text() {
+            return textBody;
+          },
+        };
+      }
+
+      async function readJsonBody(init) {
+        if (!init || typeof init.body !== "string") return {};
+        try {
+          return JSON.parse(init.body);
+        } catch (_) {
+          return {};
+        }
+      }
+
+      async function apiFetch(relPath, init) {
+        if (!isStaticDemoMode()) return fetch(appUrl(relPath), init);
+
+        const raw = typeof relPath === "string" ? relPath : "";
+        const normalized = raw.startsWith("/") ? raw : `/${raw}`;
+        const [pathOnly, queryString = ""] = normalized.split("?");
+        const method = String(init?.method || "GET").toUpperCase();
+        const q = new URLSearchParams(queryString);
+        const store = loadDemoStore();
+
+        if (pathOnly === "/api/menu" && method === "GET") {
+          return createMockResponse(200, store.menu);
+        }
+        if (pathOnly === "/api/tables" && method === "GET") {
+          return createMockResponse(200, { tables: store.allowedTables });
+        }
+        if (pathOnly === "/business/status" && method === "GET") {
+          return createMockResponse(200, { isOpen: !!store.businessOpen });
+        }
+        if (pathOnly === "/order" && method === "GET") {
+          const tableQ = String(q.get("tableId") || "").trim();
+          const rows = (store.orders || []).filter(
+            (o) => o.tableId === tableQ && o.status !== "archived",
+          );
+          return createMockResponse(200, rows);
+        }
+        if (pathOnly === "/order" && method === "POST") {
+          const payload = await readJsonBody(init);
+          const tableReq = String(payload?.tableId || "").trim();
+          const guestReq = Number(payload?.guestCount);
+          const itemsReq = Array.isArray(payload?.items) ? payload.items : [];
+          if (!store.businessOpen) return createMockResponse(403, "门店未营业，暂不接受下单");
+          if (!store.allowedTables.includes(tableReq)) {
+            return createMockResponse(400, "无效桌号", { "x-order-error-code": "ORDER_INVALID_TABLE" });
+          }
+          if (!Number.isInteger(guestReq) || guestReq <= 0) {
+            return createMockResponse(400, "无效人数", { "x-order-error-code": "ORDER_INVALID_GUEST" });
+          }
+          if (itemsReq.length === 0) {
+            return createMockResponse(400, "订单不能为空", { "x-order-error-code": "ORDER_EMPTY" });
+          }
+          const menuById = new Map((store.menu || []).map((m) => [Number(m.id), m]));
+          const trusted = [];
+          for (const item of itemsReq) {
+            const id = Number(item?.id);
+            const qty = Number(item?.quantity);
+            const menuItem = menuById.get(id);
+            if (!Number.isInteger(id) || !Number.isFinite(qty) || qty <= 0 || !menuItem) {
+              return createMockResponse(400, "部分菜品不存在或已下架", {
+                "x-order-error-code": "ORDER_MENU_STALE",
+              });
+            }
+            trusted.push({
+              id,
+              name: menuItem.name,
+              price: Number(menuItem.price) || 0,
+              quantity: Math.floor(qty),
+              status: "pending",
+            });
+          }
+          const total = trusted.reduce((sum, it) => sum + (Number(it.price) || 0) * (Number(it.quantity) || 0), 0);
+          const orderNo = `DEMO-${String(store.seq).padStart(4, "0")}`;
+          const nextOrder = {
+            id: Date.now(),
+            order_no: orderNo,
+            tableId: tableReq,
+            items: JSON.stringify(trusted),
+            total,
+            status: "pending",
+            created_at: new Date().toISOString(),
+            guest_count: guestReq,
+          };
+          const nextStore = {
+            ...store,
+            seq: store.seq + 1,
+            orders: [...store.orders, nextOrder],
+          };
+          saveDemoStore(nextStore);
+          return createMockResponse(200, "下单成功");
+        }
+        if (pathOnly === "/checkout" && method === "POST") {
+          const payload = await readJsonBody(init);
+          const tableReq = String(payload?.tableId || "").trim();
+          if (!store.allowedTables.includes(tableReq)) return createMockResponse(400, "无效桌号");
+          const nextStore = {
+            ...store,
+            checkoutRequests: [...store.checkoutRequests, { tableId: tableReq, ts: new Date().toISOString() }],
+          };
+          saveDemoStore(nextStore);
+          return createMockResponse(200, "OK");
+        }
+
+        return createMockResponse(503, "Static demo mode: endpoint not available");
       }
 
       function setLang(lang) {
@@ -1323,7 +1541,7 @@
       // 2. 新增加载菜单的函数
       async function loadMenu() {
         try {
-          const res = await fetch(appUrl("/api/menu"), { cache: "no-store" });
+          const res = await apiFetch("/api/menu", { cache: "no-store" });
           menu = await res.json();
           renderMenu(); // 加载完数据后渲染
         } catch (err) {
@@ -1333,7 +1551,7 @@
 
       async function loadAllowedTables() {
         try {
-          const res = await fetch(appUrl("/api/tables"));
+          const res = await apiFetch("/api/tables");
           if (!res.ok) throw new Error("tables-fail");
           const data = await res.json();
           allowedTableIds = Array.isArray(data.tables) ? data.tables : [];
@@ -1555,7 +1773,7 @@
       }
 
       async function refreshBusinessStatus() {
-        const res = await fetch(appUrl("/business/status"));
+        const res = await apiFetch("/business/status");
         if (!res.ok) throw new Error("business-status-failed");
         const data = await res.json();
         businessOpen = !!data.isOpen;
@@ -1977,7 +2195,7 @@
           return;
         }
 
-        fetch(appUrl("/order"), {
+        apiFetch("/order", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -2011,7 +2229,7 @@
       // 修正后的获取订单函数
       async function fetchOrder() {
         if (!tableId) return [];
-        const res = await fetch(appUrl(`/order?tableId=${encodeURIComponent(tableId)}`));
+        const res = await apiFetch(`/order?tableId=${encodeURIComponent(tableId)}`);
         if (!res.ok) throw new Error(t("fetchOrderFail"));
         return await res.json(); // 这里返回的是一个订单数组
       }
@@ -2074,7 +2292,7 @@
           }
 
           // 4️⃣ 发起结账请求
-          fetch(appUrl("/checkout"), {
+          apiFetch("/checkout", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ tableId: tableId }),
@@ -2114,7 +2332,7 @@
             container.innerHTML = `<p class="order-history-empty">${escapeHtml(t("emptyTableId"))}</p>`;
             return;
           }
-          const res = await fetch(appUrl(`/order?tableId=${encodeURIComponent(tableId)}`));
+          const res = await apiFetch(`/order?tableId=${encodeURIComponent(tableId)}`);
           const allOrders = await res.json();
           const container = document.getElementById("my-orders");
 
@@ -2229,6 +2447,10 @@
         localStorage.removeItem("guestCount");
         setupGuestCountInput();
         renderText();
+        if (isStaticDemoMode() && localStorage.getItem(DEMO_NOTICE_KEY) !== "1") {
+          localStorage.setItem(DEMO_NOTICE_KEY, "1");
+          setTimeout(() => alert(t("demoNotice")), 0);
+        }
         const langSelect = document.getElementById("langSelect");
         if (langSelect) {
           langSelect.value = currentLang;

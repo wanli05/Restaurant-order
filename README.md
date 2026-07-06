@@ -44,6 +44,20 @@ npm start
 - `npm run check:db` - DB健全性チェック
 - `npm run smoke:order` - 営業状態→メニュー→注文のスモークチェック
 
+## GitHub Pages 静的デモ
+
+このリポジトリは GitHub Pages 用の静的デモを公開できます。
+
+- 公開先: `https://<GitHubユーザー名>.github.io/Restaurant-order/index.html`
+- `github.io` ドメインで開いた場合、`index.html` は自動的に静的デモモードで動作します
+- デモモードではデータはブラウザ内ストレージのみ（再読み込みで初期化）
+
+### 有効化手順
+
+1. GitHub リポジトリの **Settings → Pages**
+2. **Build and deployment** を **GitHub Actions** に設定
+3. `main` ブランチに push（`Deploy static demo to Pages` ワークフローが実行）
+
 ## ライセンス
 
 MIT
